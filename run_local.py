@@ -34,9 +34,11 @@ def run_selection(cfg):
         "--fund-weight", str(cfg.get("fund_weight", 0.4)),
     ]
     print(f"\n{'='*60}")
-    print(f"  执行选股  |  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  Executing stock selection  |  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'='*60}")
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="utf-8", errors="replace")
     print(result.stdout)
     if result.stderr:
         print(result.stderr)
@@ -44,7 +46,9 @@ def run_selection(cfg):
 
 
 def generate_html():
-    result = subprocess.run(["python", "generate_html.py"], capture_output=True, text=True)
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
+    result = subprocess.run(["python", "generate_html.py"], capture_output=True, text=True, env=env, encoding="utf-8", errors="replace")
     print(result.stdout)
     return result.returncode == 0
 
@@ -54,31 +58,39 @@ def git_push(cfg):
         return
     msg = cfg.get("github", {}).get("commit_message", "Auto update stock selection results")
     try:
-        subprocess.run(["git", "add", "result_*.csv", "index.html"], check=False)
+        import glob
+        csv_files = glob.glob("result_*.csv")
+        html_file = "index.html"
+        
+        for f in csv_files:
+            subprocess.run(["git", "add", f], check=False)
+        if os.path.exists(html_file):
+            subprocess.run(["git", "add", html_file], check=False)
+            
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if status.stdout.strip():
             subprocess.run(["git", "commit", "-m", f"{msg} {datetime.now().strftime('%Y-%m-%d %H:%M')}"], check=False)
             subprocess.run(["git", "push"], check=False)
-            print("✅ 已推送到 GitHub")
+            print("Pushed to GitHub")
         else:
-            print("没有变更需要推送")
+            print("No changes to push")
     except Exception as e:
-        print(f"Git 操作失败: {e}")
+        print(f"Git error: {e}")
 
 
 def main():
     cfg = load_config()
     interval = cfg.get("interval_minutes", 60) * 60
-    print(f"📅 配置加载完成")
-    print(f"   间隔时间: {cfg.get('interval_minutes', 60)} 分钟")
-    print(f"   自动推送: {cfg.get('github', {}).get('auto_commit', True)}")
-    print(f"   按 Ctrl+C 停止\n")
+    print(f"Config loaded")
+    print(f"   Interval: {cfg.get('interval_minutes', 60)} minutes")
+    print(f"   Auto push: {cfg.get('github', {}).get('auto_commit', True)}")
+    print(f"   Press Ctrl+C to stop\n")
 
     while True:
         run_selection(cfg)
         generate_html()
         git_push(cfg)
-        print(f"\n⏰ 等待 {cfg.get('interval_minutes', 60)} 分钟后继续...")
+        print(f"\nWaiting {cfg.get('interval_minutes', 60)} minutes...")
         time.sleep(interval)
 
 

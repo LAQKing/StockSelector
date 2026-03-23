@@ -70,37 +70,35 @@ def run_selection(
     :param max_workers: 并发线程数（建议 4~16，过高易触发限流）
     :return: 选股结果 DataFrame
     """
-    print("📋 获取股票列表...")
+    print("[INFO] Getting stock list...")
     stock_list = get_stock_list()
 
-    print("📡 获取实时行情...")
+    print("[INFO] Getting realtime quotes...")
     all_codes = stock_list["code"].tolist()
     df_realtime = get_realtime_quotes(all_codes, max_workers=max_workers)
 
-    print(f"   获取到 {len(df_realtime)} 条行情数据")
+    print(f"   Fetched {len(df_realtime)} records")
     if not df_realtime.empty:
-        print(f"   列名: {df_realtime.columns.tolist()}")
-        print(f"   前3行样例:\n{df_realtime.head(3)}")
+        print(f"   Columns: {df_realtime.columns.tolist()}")
 
-    print("🔍 基础过滤（去 ST、小市值、停牌、涨跌停）...")
+    print("[INFO] Filtering stocks (remove ST, low cap, etc)...")
     df_realtime = filter_basic(df_realtime)
 
     if df_realtime.empty:
-        print("⚠️  过滤后没有剩余股票，请检查数据源")
+        print("[WARNING] No stocks left after filtering")
         return pd.DataFrame()
 
     if "code" not in df_realtime.columns:
-        print(f"⚠️  DataFrame 缺少 'code' 列，当前列: {df_realtime.columns.tolist()}")
+        print(f"[WARNING] DataFrame missing 'code' column: {df_realtime.columns.tolist()}")
         return pd.DataFrame()
 
     filtered_codes = df_realtime["code"].tolist()
-    print(f"   过滤后剩余 {len(filtered_codes)} 只股票")
+    print(f"   {len(filtered_codes)} stocks remaining")
 
-    # 构建 code -> realtime_dict 映射，避免重复 DataFrame 查询
     realtime_map = {row["code"]: row.to_dict() for _, row in df_realtime.iterrows()}
 
     results = []
-    print(f"📊 并发分析股票（{max_workers} 线程）...")
+    print(f"[INFO] Analyzing stocks ({max_workers} threads)...")
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {
@@ -122,7 +120,7 @@ def run_selection(
                 results.append(result)
 
     if not results:
-        print("⚠️  没有股票达到最低得分要求")
+        print("[WARNING] No stocks met the min score requirement")
         return pd.DataFrame()
 
     df_result = (
