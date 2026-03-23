@@ -2,6 +2,9 @@ import pandas as pd
 import os
 from datetime import datetime
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(SCRIPT_DIR)
+
 csv_files = [f for f in os.listdir('.') if f.startswith('result_') and f.endswith('.csv')]
 if not csv_files:
     print('No result files found, generating empty page')
@@ -170,6 +173,38 @@ html = '''<!DOCTYPE html>
             color: #6c757d;
             font-size: 12px;
         }
+        .card-list { display: none; }
+        .stock-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .stock-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .stock-card-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .stock-card-code { font-size: 13px; color: #6c757d; }
+        .stock-card-name { font-size: 16px; font-weight: 600; }
+        .stock-card-price { font-size: 18px; font-weight: 700; }
+        .stock-card-pct { font-size: 16px; font-weight: 600; }
+        .stock-card-detail {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            font-size: 12px;
+        }
+        .stock-card-item { text-align: center; }
+        .stock-card-item .label { color: #6c757d; margin-bottom: 2px; }
+        .stock-card-item .val { font-weight: 600; }
         @media (max-width: 768px) {
             body { padding: 10px; }
             .header h1 { font-size: 20px; }
@@ -178,11 +213,8 @@ html = '''<!DOCTYPE html>
             .summary-card .value { font-size: 18px; }
             .results { padding: 15px; }
             .results-header h2 { font-size: 16px; }
-            table { display: block; overflow-x: auto; }
-            th, td { padding: 10px 8px; font-size: 12px; }
-            .name { max-width: 60px; }
-            .score { font-size: 10px; padding: 2px 6px; min-width: 28px; }
-            .hide-mobile { display: none; }
+            table { display: none; }
+            .card-list { display: block !important; }
         }
         @media (max-width: 480px) {
             .header { padding: 20px 15px; }
@@ -258,6 +290,11 @@ for idx, row in df.iterrows():
     fund_cls = 'score-high' if fund_score >= 70 else 'score-mid' if fund_score >= 50 else 'score-low'
     total_cls = 'score-high' if total_score >= 70 else 'score-mid' if total_score >= 50 else 'score-low'
     
+    pe_val = row.get('pe')
+    pb_val = row.get('pb')
+    pe_str = f"{pe_val:.2f}" if isinstance(pe_val, (int, float)) and not pd.isna(pe_val) else '-'
+    pb_str = f"{pb_val:.2f}" if isinstance(pb_val, (int, float)) and not pd.isna(pb_val) else '-'
+    
     html += f'''
                     <tr>
                         <td><span class="rank {rank_class}">{idx + 1}</span></td>
@@ -265,8 +302,8 @@ for idx, row in df.iterrows():
                         <td><span class="name">{row.get('name', '')}</span></td>
                         <td class="price">¥{row.get('price', 0):.2f}</td>
                         <td class="{pct_class}">{pct_str}</td>
-                        <td class="hide-mobile">{row.get('pe', '-'):.2f if isinstance(row.get('pe'), (int, float)) else '-'}</td>
-                        <td class="hide-small hide-mobile">{row.get('pb', '-'):.2f if isinstance(row.get('pb'), (int, float)) else '-'}</td>
+                        <td class="hide-mobile">{pe_str}</td>
+                        <td class="hide-small hide-mobile">{pb_str}</td>
                         <td><span class="score {tech_cls}">{tech_score:.0f}</span></td>
                         <td><span class="score {fund_cls}">{fund_score:.0f}</span></td>
                         <td><span class="score {total_cls}">{total_score:.1f}</span></td>
@@ -276,7 +313,71 @@ for idx, row in df.iterrows():
 html += '''
                 </tbody>
             </table>
-        </div>
+            <div class="card-list">
+'''
+
+for idx, row in df.iterrows():
+    if pd.isna(row.get('code')):
+        continue
+    rank_class = 'top-3' if idx < 3 else ''
+    pct = row.get('pct_change', 0)
+    pct_class = 'pct-up' if pct > 0 else 'pct-down'
+    pct_str = f'+{pct:.2f}%' if pct >= 0 else f'{pct:.2f}%'
+    
+    tech_score = row.get('tech_score', 0)
+    fund_score = row.get('fund_score', 0)
+    total_score = row.get('total_score', 0)
+    
+    pe_val = row.get('pe')
+    pb_val = row.get('pb')
+    pe_str = f"{pe_val:.2f}" if isinstance(pe_val, (int, float)) and not pd.isna(pe_val) else '-'
+    pb_str = f"{pb_val:.2f}" if isinstance(pb_val, (int, float)) and not pd.isna(pb_val) else '-'
+    
+    html += f'''
+                <div class="stock-card">
+                    <div class="stock-card-header">
+                        <div class="stock-card-left">
+                            <span class="rank {rank_class}">{idx + 1}</span>
+                            <div>
+                                <div class="stock-card-code">{row.get('code', '')}</div>
+                                <div class="stock-card-name">{row.get('name', '')}</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="stock-card-price">¥{row.get('price', 0):.2f}</div>
+                            <div class="stock-card-pct {pct_class}">{pct_str}</div>
+                        </div>
+                    </div>
+                    <div class="stock-card-detail">
+                        <div class="stock-card-item">
+                            <div class="label">PE</div>
+                            <div class="val">{pe_str}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">PB</div>
+                            <div class="val">{pb_str}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">换手率</div>
+                            <div class="val">{row.get('turnover_rate', 0):.1f}%</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">技术分</div>
+                            <div class="val">{tech_score:.0f}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">基本面</div>
+                            <div class="val">{fund_score:.0f}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">综合分</div>
+                            <div class="val" style="color:#667eea">{total_score:.1f}</div>
+                        </div>
+                    </div>
+                </div>
+'''
+
+html += '''</div>        </div>
 
         <div class="footer">
             智能选股系统 · 数据每日自动更新

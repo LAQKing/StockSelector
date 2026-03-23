@@ -58,12 +58,8 @@ def git_push(cfg):
         return
     msg = cfg.get("github", {}).get("commit_message", "Auto update stock selection results")
     try:
-        import glob
-        csv_files = glob.glob("result_*.csv")
         html_file = "index.html"
         
-        for f in csv_files:
-            subprocess.run(["git", "add", f], check=False)
         if os.path.exists(html_file):
             subprocess.run(["git", "add", html_file], check=False)
             
