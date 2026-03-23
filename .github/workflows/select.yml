@@ -30,7 +30,9 @@ jobs:
           PYTHONIOENCODING=utf-8 python main.py --top 10 --min-score 0
           
       - name: Generate HTML
-        run: python generate_html.py
+        run: |
+          rm -f index.html
+          python generate_html.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
