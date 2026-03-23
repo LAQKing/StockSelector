@@ -1,9 +1,6 @@
 name: Stock Selector
 
 on:
-  schedule:
-    - cron: '0 0,3,6,9,12,15,18,21 * * *'
-    - cron: '30 1,4,7,10,13,16,19,22 * * *'
   workflow_dispatch:
   push:
     branches: [main]
@@ -16,23 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          
-      - name: Run stock selection
-        run: |
-          PYTHONIOENCODING=utf-8 python main.py --top 10 --min-score 0
-          
-      - name: Generate HTML
-        run: |
-          python generate_html.py
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
