@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能选股结果</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 30px; padding: 20px; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header .time { opacity: 0.8; font-size: 14px; }
+        .header .count { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; display: inline-block; margin-top: 15px; }
+        .stock-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .stock-name { font-size: 20px; font-weight: bold; color: #333; }
+        .stock-code { background: #f0f0f0; padding: 4px 10px; border-radius: 6px; font-size: 12px; color: #666; }
+        .price-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+        .price { font-size: 28px; font-weight: bold; }
+        .price-up { color: #e53935; }
+        .price-down { color: #43a047; }
+        .pct { font-size: 18px; font-weight: 500; }
+        .scores { display: flex; background: #f8f9fa; border-radius: 12px; padding: 15px; }
+        .score-item { flex: 1; text-align: center; border-right: 1px solid #e0e0e0; }
+        .score-item:last-child { border-right: none; }
+        .score-value { font-size: 22px; font-weight: bold; }
+        .score-value.tech { color: #1976d2; }
+        .score-value.fund { color: #f57c00; }
+        .score-value.total { color: #388e3c; }
+        .score-label { font-size: 12px; color: #999; margin-top: 5px; }
+        .rank { position: absolute; top: -10px; left: -10px; width: 30px; height: 30px; background: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .card-wrap { position: relative; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>智能选股结果</h1>
+            <p class="time">更新时间: 2026-03-23 16:24:51</p>
+            <p class="count">共选出 2 只股票</p>
+        </div>
+
+        <div class="card-wrap">
+            <div class="stock-card">
+                <div class="stock-header">
+                    <span class="stock-name">万向钱潮</span>
+                    <span class="stock-code">559</span>
+                </div>
+                <div class="price-row">
+                    <span class="price price-down">¥14.83</span>
+                    <span class="pct price-down">-4.63%</span>
+                </div>
+                <div class="scores">
+                    <div class="score-item">
+                        <div class="score-value tech">7</div>
+                        <div class="score-label">技术得分</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value fund">12</div>
+                        <div class="score-label">基本面</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value total">9.0</div>
+                        <div class="score-label">综合得分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-wrap">
+            <div class="stock-card">
+                <div class="stock-header">
+                    <span class="stock-name">汇源通信</span>
+                    <span class="stock-code">586</span>
+                </div>
+                <div class="price-row">
+                    <span class="price price-down">¥13.69</span>
+                    <span class="pct price-down">-7.31%</span>
+                </div>
+                <div class="scores">
+                    <div class="score-item">
+                        <div class="score-value tech">6</div>
+                        <div class="score-label">技术得分</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value fund">3</div>
+                        <div class="score-label">基本面</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-value total">4.8</div>
+                        <div class="score-label">综合得分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
