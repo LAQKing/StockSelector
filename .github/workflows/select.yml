@@ -1,0 +1,111 @@
+name: Stock Selector
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 每天凌晨1点运行
+  workflow_dispatch:  # 手动触发
+  push:
+    branches: [main]
+
+jobs:
+  select-stocks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          
+      - name: Run stock selection
+        run: |
+          PYTHONIOENCODING=utf-8 python main.py --top 10 --min-score 0
+        env:
+          PYTHONIOENCODING: utf-8
+          
+        run: |
+          python -c "
+import pandas as pd
+import os
+from datetime import datetime
+
+csv_files = [f for f in os.listdir('.') if f.startswith('result_') and f.endswith('.csv')]
+if csv_files:
+    latest = sorted(csv_files)[-1]
+    df = pd.read_csv(latest)
+    
+    html = '''<!DOCTYPE html>
+<html lang=\"zh-CN\">
+<head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <title>智能选股结果</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .stock-name { font-size: 18px; font-weight: bold; color: #1a73e8; }
+        .stock-code { color: #666; font-size: 14px; }
+        .price { font-size: 24px; font-weight: bold; margin: 10px 0; }
+        .price-up { color: #e53935; }
+        .price-down { color: #43a047; }
+        .score { display: flex; justify-content: space-around; text-align: center; margin-top: 10px; }
+        .score-item { flex: 1; }
+        .score-label { font-size: 12px; color: #999; }
+        .score-value { font-size: 20px; font-weight: bold; }
+        .tech { color: #1a73e8; }
+        .fund { color: #f57c00; }
+    </style>
+</head>
+<body>
+    <div class=\"header\">
+        <h1>智能选股结果</h1>
+        <p>更新时间: ''' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '''</p>
+        <p>共选出 ''' + str(len(df)) + ''' 只股票</p>
+    </div>
+'''
+    
+    for idx, row in df.iterrows():
+        pct = row.get('pct_change', 0)
+        price_class = 'price-up' if pct > 0 else 'price-down'
+        pct_str = f'+{pct:.2f}%' if pct >= 0 else f'{pct:.2f}%'
+        
+        html += f'''
+    <div class=\"card\">
+        <div class=\"stock-name\">{row.get('name', '')}</div>
+        <div class=\"stock-code\">{row.get('code', '')}</div>
+        <div class=\"price {price_class}\">¥{row.get('price', 0):.2f} <span>{pct_str}</span></div>
+        <div class=\"score\">
+            <div class=\"score-item\">
+                <div class=\"score-value tech\">{row.get('tech_score', 0):.0f}</div>
+                <div class=\"score-label\">技术得分</div>
+            </div>
+            <div class=\"score-item\">
+                <div class=\"score-value fund\">{row.get('fund_score', 0):.0f}</div>
+                <div class=\"score-label\">基本面</div>
+            </div>
+            <div class=\"score-item\">
+                <div class=\"score-value\">{row.get('total_score', 0):.1f}</div>
+                <div class=\"score-label\">综合得分</div>
+            </div>
+        </div>
+    </div>
+'''
+    
+    html += '</body></html>'
+    
+    with open('index.html', 'w', encoding='utf-8') as f:
+        f.write(html)
+    print('HTML generated')
+"
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
