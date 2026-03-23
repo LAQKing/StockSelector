@@ -5,7 +5,15 @@ import akshare as ak
 import pandas as pd
 import json
 import os
+import time
+import requests
 from datetime import datetime, timedelta
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+
+_session = requests.Session()
+_session.mount("http://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=1)))
+_session.mount("https://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=1)))
 
 # 加载本地股票映射
 _STOCK_MAPPING = {}
@@ -17,9 +25,17 @@ if os.path.exists(_mapping_file):
 
 def get_stock_list() -> pd.DataFrame:
     """获取 A 股全部股票列表"""
-    df = ak.stock_info_a_code_name()
-    df.columns = ["code", "name"]
-    return df
+    for attempt in range(3):
+        try:
+            df = ak.stock_info_a_code_name()
+            df.columns = ["code", "name"]
+            return df
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2)
+            else:
+                raise e
+    return pd.DataFrame()
 
 
 def get_daily_history(code: str, days: int = 120) -> pd.DataFrame:
@@ -31,29 +47,34 @@ def get_daily_history(code: str, days: int = 120) -> pd.DataFrame:
     """
     end = datetime.today().strftime("%Y%m%d")
     start = (datetime.today() - timedelta(days=days)).strftime("%Y%m%d")
-    try:
-        df = ak.stock_zh_a_hist(
-            symbol=code,
-            period="daily",
-            start_date=start,
-            end_date=end,
-            adjust="qfq",  # 前复权
-        )
-        df = df.rename(columns={
-            "日期": "date",
-            "开盘": "open",
-            "最高": "high",
-            "最低": "low",
-            "收盘": "close",
-            "成交量": "volume",
-            "成交额": "turnover",
-            "换手率": "turnover_rate",
-        })
-        df["date"] = pd.to_datetime(df["date"])
-        df = df.sort_values("date").reset_index(drop=True)
-        return df
-    except Exception:
-        return pd.DataFrame()
+    for attempt in range(3):
+        try:
+            df = ak.stock_zh_a_hist(
+                symbol=code,
+                period="daily",
+                start_date=start,
+                end_date=end,
+                adjust="qfq",  # 前复权
+            )
+            df = df.rename(columns={
+                "日期": "date",
+                "开盘": "open",
+                "最高": "high",
+                "最低": "low",
+                "收盘": "close",
+                "成交量": "volume",
+                "成交额": "turnover",
+                "换手率": "turnover_rate",
+            })
+            df["date"] = pd.to_datetime(df["date"])
+            df = df.sort_values("date").reset_index(drop=True)
+            return df
+        except Exception:
+            if attempt < 2:
+                time.sleep(2)
+            else:
+                pass
+    return pd.DataFrame()
 
 
 def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
@@ -67,32 +88,37 @@ def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     def _fetch_one(code):
-        try:
-            df = ak.stock_zh_a_hist(
-                symbol=code,
-                period="daily",
-                start_date=(datetime.today() - timedelta(days=10)).strftime("%Y%m%d"),
-                end_date=datetime.today().strftime("%Y%m%d"),
-                adjust="qfq",
-            )
-            if df.empty:
-                return None
-            latest = df.iloc[-1]
-            return {
-                "code":         code,
-                "name":         _STOCK_MAPPING.get(code, code),
-                "price":        latest.get("收盘", 0),
-                "pct_change":   latest.get("涨跌幅", 0),
-                "volume":       latest.get("成交量", 0),
-                "turnover":     latest.get("成交额", 0),
-                "turnover_rate": latest.get("换手率", 0),
-                "pe":           0,
-                "pb":           0,
-                "market_cap":   0,
-                "float_cap":    latest.get("成交额", 0) * 100,
-            }
-        except Exception:
-            return None
+        for attempt in range(3):
+            try:
+                df = ak.stock_zh_a_hist(
+                    symbol=code,
+                    period="daily",
+                    start_date=(datetime.today() - timedelta(days=10)).strftime("%Y%m%d"),
+                    end_date=datetime.today().strftime("%Y%m%d"),
+                    adjust="qfq",
+                )
+                if df.empty:
+                    return None
+                latest = df.iloc[-1]
+                return {
+                    "code":         code,
+                    "name":         _STOCK_MAPPING.get(code, code),
+                    "price":        latest.get("收盘", 0),
+                    "pct_change":   latest.get("涨跌幅", 0),
+                    "volume":       latest.get("成交量", 0),
+                    "turnover":     latest.get("成交额", 0),
+                    "turnover_rate": latest.get("换手率", 0),
+                    "pe":           0,
+                    "pb":           0,
+                    "market_cap":   0,
+                    "float_cap":    latest.get("成交额", 0) * 100,
+                }
+            except Exception:
+                if attempt < 2:
+                    time.sleep(1)
+                else:
+                    return None
+        return None
 
     target_codes = codes[:500]
     print(f"   并发获取最新行情（共 {len(target_codes)} 只，{max_workers} 线程）...")
