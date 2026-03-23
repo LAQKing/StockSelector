@@ -15,80 +15,267 @@ html = '''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能选股结果</title>
+    <title>A股智能选股系统</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .header { text-align: center; color: white; margin-bottom: 30px; padding: 20px; }
-        .header h1 { font-size: 28px; margin-bottom: 10px; }
-        .header .time { opacity: 0.8; font-size: 14px; }
-        .header .count { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; display: inline-block; margin-top: 15px; }
-        .stock-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .stock-name { font-size: 20px; font-weight: bold; color: #333; }
-        .stock-code { background: #f0f0f0; padding: 4px 10px; border-radius: 6px; font-size: 12px; color: #666; }
-        .price-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
-        .price { font-size: 28px; font-weight: bold; }
-        .price-up { color: #e53935; }
-        .price-down { color: #43a047; }
-        .pct { font-size: 18px; font-weight: 500; }
-        .scores { display: flex; background: #f8f9fa; border-radius: 12px; padding: 15px; }
-        .score-item { flex: 1; text-align: center; border-right: 1px solid #e0e0e0; }
-        .score-item:last-child { border-right: none; }
-        .score-value { font-size: 22px; font-weight: bold; }
-        .score-value.tech { color: #1976d2; }
-        .score-value.fund { color: #f57c00; }
-        .score-value.total { color: #388e3c; }
-        .score-label { font-size: 12px; color: #999; margin-top: 5px; }
-        .rank { position: absolute; top: -10px; left: -10px; width: 30px; height: 30px; background: #667eea; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .card-wrap { position: relative; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 13px; }
+        .header .update-time {
+            margin-top: 10px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .summary-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .summary-card .label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        .summary-card .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .results { padding: 20px; }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .results-header h2 { color: #212529; font-size: 18px; }
+        .timestamp {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        thead {
+            background: #f8f9fa;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 13px;
+        }
+        th {
+            font-weight: 600;
+            color: #495057;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        td { color: #212529; }
+        tr:hover { background: #f8f9fa; }
+        .rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .rank.top-3 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .code {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        .name {
+            font-weight: 600;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .price {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .pct-up { color: #dc3545; font-weight: 600; }
+        .pct-down { color: #28a745; font-weight: 600; }
+        .score {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 11px;
+            text-align: center;
+            min-width: 32px;
+        }
+        .score-high { background: #d4edda; color: #155724; }
+        .score-mid { background: #fff3cd; color: #856404; }
+        .score-low { background: #f8d7da; color: #721c24; }
+        .empty {
+            text-align: center;
+            padding: 60px;
+            color: #6c757d;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header h1 { font-size: 20px; }
+            .summary { grid-template-columns: repeat(2, 1fr); padding: 15px; gap: 10px; }
+            .summary-card { padding: 12px; }
+            .summary-card .value { font-size: 18px; }
+            .results { padding: 15px; }
+            .results-header h2 { font-size: 16px; }
+            table { display: block; overflow-x: auto; }
+            th, td { padding: 10px 8px; font-size: 12px; }
+            .name { max-width: 60px; }
+            .score { font-size: 10px; padding: 2px 6px; min-width: 28px; }
+            .hide-mobile { display: none; }
+        }
+        @media (max-width: 480px) {
+            .header { padding: 20px 15px; }
+            .header h1 { font-size: 18px; }
+            .summary { grid-template-columns: 1fr 1fr; }
+            .hide-small { display: none; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>智能选股结果</h1>
-            <p class="time">更新时间: ''' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '''</p>
-            <p class="count">共选出 ''' + str(len(df)) + ''' 只股票</p>
+            <h1>A股智能选股系统</h1>
+            <p>技术面 + 基本面综合评分</p>
+            <p class="update-time">更新时间: ''' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '''</p>
         </div>
+
+        <div class="summary">
+            <div class="summary-card">
+                <div class="label">选出股票</div>
+                <div class="value">''' + str(len(df)) + ''' 只</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">平均涨幅</div>
+                <div class="value">''' + f"{(df['pct_change'].mean() if 'pct_change' in df.columns else 0):.2f}%" + '''</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">最高涨幅</div>
+                <div class="value">''' + f"{(df['pct_change'].max() if 'pct_change' in df.columns else 0):.2f}%" + '''</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">平均综合分</div>
+                <div class="value">''' + f"{(df['total_score'].mean() if 'total_score' in df.columns else 0):.1f}" + '''</div>
+            </div>
+        </div>
+
+        <div class="results">
+            <div class="results-header">
+                <h2>选股结果</h2>
+                <div class="timestamp">共 ''' + str(len(df)) + ''' 只股票</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>代码</th>
+                        <th>名称</th>
+                        <th>价格</th>
+                        <th>涨跌幅</th>
+                        <th class="hide-mobile">市盈率</th>
+                        <th class="hide-small hide-mobile">市净率</th>
+                        <th>技术分</th>
+                        <th>基本分</th>
+                        <th>综合分</th>
+                    </tr>
+                </thead>
+                <tbody>
 '''
 
 for idx, row in df.iterrows():
+    rank_class = 'top-3' if idx < 3 else ''
     pct = row.get('pct_change', 0)
-    price_class = 'price-up' if pct > 0 else 'price-down'
+    pct_class = 'pct-up' if pct > 0 else 'pct-down'
     pct_str = f'+{pct:.2f}%' if pct >= 0 else f'{pct:.2f}%'
     
+    tech_score = row.get('tech_score', 0)
+    fund_score = row.get('fund_score', 0)
+    total_score = row.get('total_score', 0)
+    
+    tech_cls = 'score-high' if tech_score >= 70 else 'score-mid' if tech_score >= 50 else 'score-low'
+    fund_cls = 'score-high' if fund_score >= 70 else 'score-mid' if fund_score >= 50 else 'score-low'
+    total_cls = 'score-high' if total_score >= 70 else 'score-mid' if total_score >= 50 else 'score-low'
+    
     html += f'''
-        <div class="card-wrap">
-            <div class="stock-card">
-                <div class="stock-header">
-                    <span class="stock-name">{row.get('name', '')}</span>
-                    <span class="stock-code">{row.get('code', '')}</span>
-                </div>
-                <div class="price-row">
-                    <span class="price {price_class}">¥{row.get('price', 0):.2f}</span>
-                    <span class="pct {price_class}">{pct_str}</span>
-                </div>
-                <div class="scores">
-                    <div class="score-item">
-                        <div class="score-value tech">{row.get('tech_score', 0):.0f}</div>
-                        <div class="score-label">技术得分</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-value fund">{row.get('fund_score', 0):.0f}</div>
-                        <div class="score-label">基本面</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-value total">{row.get('total_score', 0):.1f}</div>
-                        <div class="score-label">综合得分</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <tr>
+                        <td><span class="rank {rank_class}">{idx + 1}</span></td>
+                        <td><span class="code">{row.get('code', '')}</span></td>
+                        <td><span class="name">{row.get('name', '')}</span></td>
+                        <td class="price">¥{row.get('price', 0):.2f}</td>
+                        <td class="{pct_class}">{pct_str}</td>
+                        <td class="hide-mobile">{row.get('pe', '-'):.2f if isinstance(row.get('pe'), (int, float)) else '-'}</td>
+                        <td class="hide-small hide-mobile">{row.get('pb', '-'):.2f if isinstance(row.get('pb'), (int, float)) else '-'}</td>
+                        <td><span class="score {tech_cls}">{tech_score:.0f}</span></td>
+                        <td><span class="score {fund_cls}">{fund_score:.0f}</span></td>
+                        <td><span class="score {total_cls}">{total_score:.1f}</span></td>
+                    </tr>
 '''
 
 html += '''
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            智能选股系统 · 数据每日自动更新
+        </div>
     </div>
 </body>
 </html>'''
