@@ -31,7 +31,6 @@ jobs:
           
       - name: Generate HTML
         run: |
-          rm -f index.html
           python generate_html.py
 
       - name: Deploy to GitHub Pages

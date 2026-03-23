@@ -4,11 +4,14 @@ from datetime import datetime
 
 csv_files = [f for f in os.listdir('.') if f.startswith('result_') and f.endswith('.csv')]
 if not csv_files:
-    print('No result files found')
-    exit(1)
+    print('No result files found, generating empty page')
+    df = pd.DataFrame(columns=['code', 'name', 'price', 'pct_change', 'pe', 'pb', 'turnover_rate', 'tech_score', 'fund_score', 'total_score'])
+    latest = None
+else:
+    latest = sorted(csv_files)[-1]
+    df = pd.read_csv(latest)
+    print(f"Loaded result file: {latest}")
 
-latest = sorted(csv_files)[-1]
-df = pd.read_csv(latest)
 
 html = '''<!DOCTYPE html>
 <html lang="zh-CN">
@@ -240,6 +243,8 @@ html = '''<!DOCTYPE html>
 '''
 
 for idx, row in df.iterrows():
+    if pd.isna(row.get('code')):
+        continue
     rank_class = 'top-3' if idx < 3 else ''
     pct = row.get('pct_change', 0)
     pct_class = 'pct-up' if pct > 0 else 'pct-down'
