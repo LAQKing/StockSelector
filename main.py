@@ -5,6 +5,7 @@ main.py - 入口文件（单线程稳定版）
 import argparse
 import pandas as pd
 import traceback
+import sys
 from datetime import datetime
 from selector import run_selection
 
@@ -15,31 +16,57 @@ def main():
     parser.add_argument("--min-score",  type=float, default=40.0, help="Min score (default 40)")
     parser.add_argument("--tech-weight", type=float, default=0.6, help="Tech weight (default 0.6)")
     parser.add_argument("--fund-weight", type=float, default=0.4, help="Fund weight (default 0.4)")
+    parser.add_argument("--auto-retry",  action="store_true", help="Auto reduce score if no stocks found")
     args = parser.parse_args()
 
-    print(f"\n{'='*60}")
-    print(f"  Stock Selector v2.1  |  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print(f"{'='*60}")
-    print(f"  Tech weight: {args.tech_weight}  |  Fund weight: {args.fund_weight}")
-    print(f"  Min score: {args.min_score}  |  Top {args.top} stocks")
-    print(f"{'='*60}\n")
+    min_score = args.min_score
+    if args.auto_retry:
+        for score in [min_score, min_score - 10, min_score - 20, min_score - 30]:
+            if score < 0:
+                break
+            print(f"\n{'='*60}")
+            print(f"  Stock Selector v2.1  |  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+            print(f"{'='*60}")
+            print(f"  Tech weight: {args.tech_weight}  |  Fund weight: {args.fund_weight}")
+            print(f"  Min score: {score}  |  Top {args.top} stocks")
+            
+            try:
+                df = run_selection(
+                    top_n=args.top,
+                    tech_weight=args.tech_weight,
+                    fund_weight=args.fund_weight,
+                    min_score=score,
+                )
+            except Exception as e:
+                print(f"[ERROR] {e}")
+                traceback.print_exc()
+                df = pd.DataFrame()
 
-    try:
-        df = run_selection(
-            top_n=args.top,
-            tech_weight=args.tech_weight,
-            fund_weight=args.fund_weight,
-            min_score=args.min_score,
-        )
-    except Exception as e:
-        print(f"[ERROR] {e}")
-        import traceback
-        traceback.print_exc()
-        df = pd.DataFrame()
+            if not df.empty:
+                break
+            print(f"No stocks found with score >= {score}, retrying with lower score...")
+    else:
+        print(f"\n{'='*60}")
+        print(f"  Stock Selector v2.1  |  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        print(f"{'='*60}")
+        print(f"  Tech weight: {args.tech_weight}  |  Fund weight: {args.fund_weight}")
+        print(f"  Min score: {min_score}  |  Top {args.top} stocks")
+        
+        try:
+            df = run_selection(
+                top_n=args.top,
+                tech_weight=args.tech_weight,
+                fund_weight=args.fund_weight,
+                min_score=min_score,
+            )
+        except Exception as e:
+            print(f"[ERROR] {e}")
+            traceback.print_exc()
+            df = pd.DataFrame()
 
     if df.empty:
         print("No stocks found. Try lowering --min-score.")
-        return
+        sys.exit(1)
 
     pd.set_option("display.max_columns", None)
     pd.set_option("display.width", 150)

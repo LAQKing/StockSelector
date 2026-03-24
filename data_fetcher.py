@@ -1,5 +1,5 @@
 """
-data_fetcher.py - AkShare 数据获取模块
+data_fetcher.py - AkShare 数据获取模块（支持东方财富/新浪财经）
 """
 import akshare as ak
 import pandas as pd
@@ -15,12 +15,7 @@ _session = requests.Session()
 _session.mount("http://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=1)))
 _session.mount("https://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=1)))
 
-# 加载本地股票映射
-_STOCK_MAPPING = {}
-_mapping_file = os.path.join(os.path.dirname(__file__), "stock_mapping.json")
-if os.path.exists(_mapping_file):
-    with open(_mapping_file, "r", encoding="utf-8") as f:
-        _STOCK_MAPPING = json.load(f)
+_data_source = "eastmoney"  # eastmoney or sina
 
 
 def get_stock_list() -> pd.DataFrame:
@@ -45,6 +40,15 @@ def get_daily_history(code: str, days: int = 120) -> pd.DataFrame:
     :param days: 获取最近 N 天
     :return: DataFrame，含 date/open/high/low/close/volume/turnover
     """
+    # Try East Money first
+    df = _get_daily_history_eastmoney(code, days)
+    if df.empty:
+        # Fallback to Sina
+        df = _get_daily_history_sina(code, days)
+    return df
+
+
+def _get_daily_history_eastmoney(code: str, days: int = 120) -> pd.DataFrame:
     end = datetime.today().strftime("%Y%m%d")
     start = (datetime.today() - timedelta(days=days)).strftime("%Y%m%d")
     for attempt in range(3):
@@ -54,7 +58,7 @@ def get_daily_history(code: str, days: int = 120) -> pd.DataFrame:
                 period="daily",
                 start_date=start,
                 end_date=end,
-                adjust="qfq",  # 前复权
+                adjust="qfq",
             )
             df = df.rename(columns={
                 "日期": "date",
@@ -72,9 +76,49 @@ def get_daily_history(code: str, days: int = 120) -> pd.DataFrame:
         except Exception:
             if attempt < 2:
                 time.sleep(2)
-            else:
-                pass
     return pd.DataFrame()
+
+
+def _get_daily_history_sina(code: str, days: int = 120) -> pd.DataFrame:
+    """使用新浪财经接口获取历史数据"""
+    try:
+        if code.startswith("6"):
+            sina_code = f"sh{code}"
+        else:
+            sina_code = f"sz{code}"
+        
+        url = f"https://quotes.sina.cn/cn/api/jsonp.php/var%20_{code}=/CN_MarketDataService.getKLineData?symbol={sina_code}&scale=240&ma=5&datalen={days}"
+        resp = requests.get(url, timeout=10)
+        text = resp.text
+        if not text or "null" in text:
+            return pd.DataFrame()
+        
+        import re
+        match = re.search(r'\[.*\]', text)
+        if not match:
+            return pd.DataFrame()
+        
+        import json as json_lib
+        data = json_lib.loads(match.group())
+        if not data:
+            return pd.DataFrame()
+        
+        df = pd.DataFrame(data)
+        df = df.rename(columns={
+            "day": "date",
+            "open": "open",
+            "high": "high",
+            "low": "low",
+            "close": "close",
+            "volume": "volume",
+        })
+        df["date"] = pd.to_datetime(df["date"])
+        df = df.sort_values("date").reset_index(drop=True)
+        df["turnover"] = 0
+        df["turnover_rate"] = 0
+        return df
+    except Exception:
+        return pd.DataFrame()
 
 
 def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
@@ -86,6 +130,76 @@ def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
     """
     from tqdm import tqdm
     from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    def _fetch_via_spot():
+        """Use EastMoney spot API"""
+        try:
+            df = ak.stock_zh_a_spot_em()
+            if not df.empty:
+                df = df[df["代码"].isin(codes)]
+                return df.rename(columns={
+                    "代码": "code",
+                    "名称": "name",
+                    "最新价": "price",
+                    "涨跌幅": "pct_change",
+                    "成交量": "volume",
+                    "成交额": "turnover",
+                    "振幅": "amplitude",
+                    "最高": "high",
+                    "最低": "low",
+                    "今开": "open",
+                    "昨收": "pre_close",
+                    "量比": "volume_ratio",
+                    "换手率": "turnover_rate",
+                    "市盈率-动态": "pe",
+                    "市净率": "pb",
+                })
+        except Exception as e:
+            print(f"Spot API error: {e}")
+        return pd.DataFrame()
+
+    def _fetch_via_sina(codes: list) -> pd.DataFrame:
+        """Use Sina财经 API"""
+        try:
+            results = []
+            for code in codes[:100]:  # Sina一次最多100只
+                if code.startswith("6"):
+                    sina_code = f"sh{code}"
+                else:
+                    sina_code = f"sz{code}"
+                url = f"https://hq.sinajs.cn/list={sina_code}"
+                resp = requests.get(url, timeout=5)
+                if resp.status_code == 200:
+                    text = resp.text
+                    if text and "=" in text:
+                        parts = text.split("=")[1].split(",")
+                        if len(parts) > 30:
+                            try:
+                                price = float(parts[0]) if parts[0] else 0
+                                pct = 0
+                                if len(parts) > 30:
+                                    pre_close = float(parts[2]) if parts[2] else 0
+                                    if pre_close > 0:
+                                        pct = (price - pre_close) / pre_close * 100
+                                results.append({
+                                    "code": code,
+                                    "name": _STOCK_MAPPING.get(code, code),
+                                    "price": price,
+                                    "pct_change": pct,
+                                    "volume": 0,
+                                    "turnover": 0,
+                                    "turnover_rate": 0,
+                                    "pe": 0,
+                                    "pb": 0,
+                                    "market_cap": 0,
+                                    "float_cap": 0,
+                                })
+                            except:
+                                pass
+            return pd.DataFrame(results)
+        except Exception as e:
+            print(f"Sina API error: {e}")
+        return pd.DataFrame()
 
     def _fetch_one(code):
         for attempt in range(3):
@@ -120,13 +234,35 @@ def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
                     return None
         return None
 
+    # Try spot API first
+    print(f"   Trying spot API...")
+    df_spot = _fetch_via_spot()
+    if not df_spot.empty:
+        df_spot["price"] = pd.to_numeric(df_spot["price"], errors="coerce").fillna(0)
+        df_spot["pct_change"] = pd.to_numeric(df_spot["pct_change"], errors="coerce").fillna(0)
+        df_spot["volume"] = pd.to_numeric(df_spot["volume"], errors="coerce").fillna(0)
+        df_spot["turnover"] = pd.to_numeric(df_spot["turnover"], errors="coerce").fillna(0)
+        df_spot["turnover_rate"] = pd.to_numeric(df_spot["turnover_rate"], errors="coerce").fillna(0)
+        df_spot["pe"] = pd.to_numeric(df_spot["pe"], errors="coerce").fillna(0)
+        df_spot["pb"] = pd.to_numeric(df_spot["pb"], errors="coerce").fillna(0)
+        print(f"   Got {len(df_spot)} stocks via spot API")
+        return df_spot
+
+    # Try Sina API
+    print(f"   Trying Sina API...")
+    df_sina = _fetch_via_sina(codes)
+    if not df_sina.empty:
+        print(f"   Got {len(df_sina)} stocks via Sina API")
+        return df_sina
+
+    # Last fallback: historical API
     target_codes = codes[:500]
-    print(f"   并发获取最新行情（共 {len(target_codes)} 只，{max_workers} 线程）...")
+    print(f"   Fallback: fetching quotes ({len(target_codes)} stocks, {max_workers} threads)...")
 
     results = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(_fetch_one, code): code for code in target_codes}
-        for future in tqdm(as_completed(futures), total=len(futures), desc="行情获取"):
+        for future in tqdm(as_completed(futures), total=len(futures), desc="Fetching quotes"):
             result = future.result()
             if result is not None:
                 results.append(result)

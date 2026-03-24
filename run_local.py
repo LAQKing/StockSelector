@@ -32,9 +32,10 @@ def run_selection(cfg):
     cmd = [
         "python", "main.py",
         "--top", str(cfg.get("top", 10)),
-        "--min-score", str(cfg.get("min_score", 0)),
+        "--min-score", str(cfg.get("min_score", 40)),
         "--tech-weight", str(cfg.get("tech_weight", 0.6)),
         "--fund-weight", str(cfg.get("fund_weight", 0.4)),
+        "--auto-retry",
     ]
     print(f"\n{'='*60}")
     print(f"  Executing stock selection  |  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -107,14 +108,20 @@ def main():
     print(f"   Press Ctrl+C to stop\n")
 
     if run_once:
-        run_selection(cfg)
-        generate_html()
-        git_push(cfg)
-    else:
-        while True:
-            run_selection(cfg)
+        success = run_selection(cfg)
+        if success:
             generate_html()
             git_push(cfg)
+        else:
+            print("No stocks selected, skipping update")
+    else:
+        while True:
+            success = run_selection(cfg)
+            if success:
+                generate_html()
+                git_push(cfg)
+            else:
+                print("No stocks selected, skipping update")
             print(f"\nWaiting {cfg.get('interval_minutes', 60)} minutes...")
             time.sleep(interval)
 
