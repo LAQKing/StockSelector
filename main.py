@@ -63,6 +63,16 @@ def main():
     ]].to_string())
 
     out_file = f"result_{datetime.now().strftime('%Y%m%d_%H%M')}.csv"
+    
+    # Delete old result files
+    import glob
+    import os
+    for f in glob.glob("result_*.csv"):
+        try:
+            os.remove(f)
+        except:
+            pass
+    
     df.to_csv(out_file, index=True, encoding="utf-8-sig")
     print(f"\nResult saved to {out_file}")
     

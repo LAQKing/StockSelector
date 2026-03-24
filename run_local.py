@@ -1,9 +1,11 @@
 """
 本地运行脚本 - 读取配置，按间隔执行并自动推送到 Git
-用法：python run_local.py
+用法：python run_local.py [--once]
+       --once 只运行一次，不循环
 """
 import json
 import os
+import sys
 import time
 import subprocess
 from datetime import datetime
@@ -26,6 +28,7 @@ def load_config():
 
 
 def run_selection(cfg):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     cmd = [
         "python", "main.py",
         "--top", str(cfg.get("top", 10)),
@@ -38,18 +41,26 @@ def run_selection(cfg):
     print(f"{'='*60}")
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
-    result = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="utf-8", errors="replace")
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env, encoding="utf-8", errors="replace", cwd=script_dir)
     print(result.stdout)
     if result.stderr:
-        print(result.stderr)
+        print("STDERR:", result.stderr)
+    print("Return code:", result.returncode)
     return result.returncode == 0
 
 
 def generate_html():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"
-    result = subprocess.run(["python", "generate_html.py"], capture_output=True, text=True, env=env, encoding="utf-8", errors="replace")
+    result = subprocess.run(
+        ["python", "generate_html.py"], 
+        capture_output=True, text=True, env=env, encoding="utf-8", errors="replace",
+        cwd=script_dir
+    )
     print(result.stdout)
+    if result.stderr:
+        print(result.stderr)
     return result.returncode == 0
 
 
@@ -66,8 +77,17 @@ def git_push(cfg):
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if status.stdout.strip():
             subprocess.run(["git", "commit", "-m", f"{msg} {datetime.now().strftime('%Y-%m-%d %H:%M')}"], check=False)
-            subprocess.run(["git", "push"], check=False)
-            print("Pushed to GitHub")
+            
+            # Retry push up to 5 times
+            for attempt in range(5):
+                result = subprocess.run(["git", "push"], capture_output=True, text=True)
+                if result.returncode == 0:
+                    print("Pushed to GitHub")
+                    break
+                print(f"Push failed, retrying ({attempt + 1}/5)...")
+                time.sleep(5)
+            else:
+                print("Push failed after 5 attempts")
         else:
             print("No changes to push")
     except Exception as e:
@@ -77,17 +97,26 @@ def git_push(cfg):
 def main():
     cfg = load_config()
     interval = cfg.get("interval_minutes", 60) * 60
+    
+    run_once = "--once" in sys.argv
+    
     print(f"Config loaded")
     print(f"   Interval: {cfg.get('interval_minutes', 60)} minutes")
     print(f"   Auto push: {cfg.get('github', {}).get('auto_commit', True)}")
+    print(f"   Mode: {'Run once' if run_once else 'Loop'}")
     print(f"   Press Ctrl+C to stop\n")
 
-    while True:
+    if run_once:
         run_selection(cfg)
         generate_html()
         git_push(cfg)
-        print(f"\nWaiting {cfg.get('interval_minutes', 60)} minutes...")
-        time.sleep(interval)
+    else:
+        while True:
+            run_selection(cfg)
+            generate_html()
+            git_push(cfg)
+            print(f"\nWaiting {cfg.get('interval_minutes', 60)} minutes...")
+            time.sleep(interval)
 
 
 if __name__ == "__main__":
