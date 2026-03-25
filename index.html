@@ -155,6 +155,43 @@
             color: #6c757d;
             font-size: 12px;
         }
+        .market-review {
+            background: white;
+            margin: 0 20px 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .market-review h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #212529;
+        }
+        .review-indices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        .review-index {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 13px;
+        }
+        .review-index span:first-child {
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+        .review-index span:last-child {
+            font-weight: 600;
+        }
+        .review-stats {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #6c757d;
+        }
         .card-list { display: none; }
         .stock-card {
             background: white;
@@ -211,7 +248,7 @@
         <div class="header">
             <h1>A股智能选股系统</h1>
             <p>技术面 + 基本面综合评分</p>
-            <p class="update-time">更新时间: 2026-03-25 18:22:09</p>
+            <p class="update-time">更新时间: 2026-03-25 18:40:39</p>
         </div>
 
         <div class="summary">
@@ -516,22 +553,6 @@
 
                     <tr>
                         <td><span class="rank ">17</span></td>
-                        <td><span class="code">002053.SZ</span></td>
-                        <td><span class="name">云南能投</span></td>
-                        <td class="price">¥13.81</td>
-                        <td class="pct-up">+6.23%</td>
-                        <td class="hide-mobile">42.03</td>
-                        <td class="hide-small hide-mobile">1.72</td>
-                        <td class="hide-small">127.2</td>
-                        <td class="hide-small">+6.23%</td>
-                        <td class="hide-small">8</td>
-                        <td><span class="score score-mid">52</span></td>
-                        <td><span class="score score-low">25</span></td>
-                        <td><span class="score score-low">41.2</span></td>
-                    </tr>
-
-                    <tr>
-                        <td><span class="rank ">18</span></td>
                         <td><span class="code">001203.SZ</span></td>
                         <td><span class="name">大中矿业</span></td>
                         <td class="price">¥40.85</td>
@@ -547,7 +568,7 @@
                     </tr>
 
                     <tr>
-                        <td><span class="rank ">19</span></td>
+                        <td><span class="rank ">18</span></td>
                         <td><span class="code">000048.SZ</span></td>
                         <td><span class="name">京基智农</span></td>
                         <td class="price">¥19.68</td>
@@ -559,6 +580,22 @@
                         <td class="hide-small">12</td>
                         <td><span class="score score-low">34</span></td>
                         <td><span class="score score-mid">52</span></td>
+                        <td><span class="score score-low">41.2</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="rank ">19</span></td>
+                        <td><span class="code">002053.SZ</span></td>
+                        <td><span class="name">云南能投</span></td>
+                        <td class="price">¥13.81</td>
+                        <td class="pct-up">+6.23%</td>
+                        <td class="hide-mobile">42.03</td>
+                        <td class="hide-small hide-mobile">1.72</td>
+                        <td class="hide-small">127.2</td>
+                        <td class="hide-small">+6.23%</td>
+                        <td class="hide-small">8</td>
+                        <td><span class="score score-mid">52</span></td>
+                        <td><span class="score score-low">25</span></td>
                         <td><span class="score score-low">41.2</span></td>
                     </tr>
 
@@ -1451,60 +1488,6 @@
                         <div class="stock-card-left">
                             <span class="rank ">17</span>
                             <div>
-                                <div class="stock-card-code">002053.SZ</div>
-                                <div class="stock-card-name">云南能投</div>
-                            </div>
-                        </div>
-                        <div style="text-align:right">
-                            <div class="stock-card-price">¥13.81</div>
-                            <div class="stock-card-pct pct-up">+6.23%</div>
-                        </div>
-                    </div>
-                    <div class="stock-card-detail">
-                        <div class="stock-card-item">
-                            <div class="label">市盈率</div>
-                            <div class="val">42.03</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">市净率</div>
-                            <div class="val">1.72</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">市值(亿)</div>
-                            <div class="val">127.2</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">换手率</div>
-                            <div class="val">6.2%</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">收益率</div>
-                            <div class="val">+6.23%</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">流动性</div>
-                            <div class="val">8</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">技术分</div>
-                            <div class="val">52</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">基本面</div>
-                            <div class="val">25</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">综合分</div>
-                            <div class="val" style="color:#667eea">41.2</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stock-card">
-                    <div class="stock-card-header">
-                        <div class="stock-card-left">
-                            <span class="rank ">18</span>
-                            <div>
                                 <div class="stock-card-code">001203.SZ</div>
                                 <div class="stock-card-name">大中矿业</div>
                             </div>
@@ -1557,7 +1540,7 @@
                 <div class="stock-card">
                     <div class="stock-card-header">
                         <div class="stock-card-left">
-                            <span class="rank ">19</span>
+                            <span class="rank ">18</span>
                             <div>
                                 <div class="stock-card-code">000048.SZ</div>
                                 <div class="stock-card-name">京基智农</div>
@@ -1600,6 +1583,60 @@
                         <div class="stock-card-item">
                             <div class="label">基本面</div>
                             <div class="val">52</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">综合分</div>
+                            <div class="val" style="color:#667eea">41.2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-card-header">
+                        <div class="stock-card-left">
+                            <span class="rank ">19</span>
+                            <div>
+                                <div class="stock-card-code">002053.SZ</div>
+                                <div class="stock-card-name">云南能投</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="stock-card-price">¥13.81</div>
+                            <div class="stock-card-pct pct-up">+6.23%</div>
+                        </div>
+                    </div>
+                    <div class="stock-card-detail">
+                        <div class="stock-card-item">
+                            <div class="label">市盈率</div>
+                            <div class="val">42.03</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">市净率</div>
+                            <div class="val">1.72</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">市值(亿)</div>
+                            <div class="val">127.2</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">换手率</div>
+                            <div class="val">6.2%</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">收益率</div>
+                            <div class="val">+6.23%</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">流动性</div>
+                            <div class="val">8</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">技术分</div>
+                            <div class="val">52</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">基本面</div>
+                            <div class="val">25</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">综合分</div>
@@ -1662,7 +1699,13 @@
                     </div>
                 </div>
 </div>        </div>
-
+        
+        <div class="market-review">
+            <h3>📊 大盘复盘 · 2026-03-25</h3>
+            <div class="review-indices"><div class="review-index"><span>上证指数</span><span style="color:#dc3545">3931.84 (+1.30%)</span></div><div class="review-index"><span>深证成指</span><span style="color:#dc3545">13801.00 (+1.95%)</span></div><div class="review-index"><span>创业板指</span><span style="color:#dc3545">3316.97 (+2.01%)</span></div></div>
+            <div class="review-stats">上涨: 0 | 下跌: 0</div>
+        </div>
+    
         <div class="footer">
             智能选股系统 · 数据每日自动更新
         </div>
