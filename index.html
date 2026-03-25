@@ -171,10 +171,11 @@
             display: flex;
             align-items: center;
             font-size: 13px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         .review-index span:first-child {
             color: #6c757d;
+            margin-right: 5px;
         }
         .review-index span:last-child {
             font-weight: 600;
@@ -217,6 +218,30 @@
         .stock-card-item { text-align: center; }
         .stock-card-item .label { color: #6c757d; margin-bottom: 2px; }
         .stock-card-item .val { font-weight: 600; }
+        .review-sectors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .sector-group {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .sector-group h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .review-sectors {
+                grid-template-columns: 1fr;
+            }
+        }
         @media (max-width: 768px) {
             body { padding: 10px; }
             .header h1 { font-size: 20px; }
@@ -241,7 +266,7 @@
         <div class="header">
             <h1>A股智能选股系统</h1>
             <p>技术面 + 基本面综合评分</p>
-            <p class="update-time">更新时间: 2026-03-25 19:06:06</p>
+            <p class="update-time">更新时间: 2026-03-25 19:25:59</p>
         </div>
 
         <div class="summary">
@@ -386,22 +411,6 @@
 
                     <tr>
                         <td><span class="rank ">7</span></td>
-                        <td><span class="code">000531.SZ</span></td>
-                        <td><span class="name">穗恒运Ａ</span></td>
-                        <td class="price">¥8.03</td>
-                        <td class="pct-up">+1.90%</td>
-                        <td class="hide-mobile">14.28</td>
-                        <td class="hide-small hide-mobile">1.20</td>
-                        <td class="hide-small">83.6</td>
-                        <td class="hide-small">+1.90%</td>
-                        <td class="hide-small">0</td>
-                        <td><span class="score score-mid">52</span></td>
-                        <td><span class="score score-low">40</span></td>
-                        <td><span class="score score-low">47.2</span></td>
-                    </tr>
-
-                    <tr>
-                        <td><span class="rank ">8</span></td>
                         <td><span class="code">000938.SZ</span></td>
                         <td><span class="name">紫光股份</span></td>
                         <td class="price">¥26.34</td>
@@ -411,6 +420,22 @@
                         <td class="hide-small">753.3</td>
                         <td class="hide-small">+2.49%</td>
                         <td class="hide-small">20</td>
+                        <td><span class="score score-mid">52</span></td>
+                        <td><span class="score score-low">40</span></td>
+                        <td><span class="score score-low">47.2</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><span class="rank ">8</span></td>
+                        <td><span class="code">000531.SZ</span></td>
+                        <td><span class="name">穗恒运Ａ</span></td>
+                        <td class="price">¥8.03</td>
+                        <td class="pct-up">+1.90%</td>
+                        <td class="hide-mobile">14.28</td>
+                        <td class="hide-small hide-mobile">1.20</td>
+                        <td class="hide-small">83.6</td>
+                        <td class="hide-small">+1.90%</td>
+                        <td class="hide-small">0</td>
                         <td><span class="score score-mid">52</span></td>
                         <td><span class="score score-low">40</span></td>
                         <td><span class="score score-low">47.2</span></td>
@@ -546,17 +571,17 @@
 
                     <tr>
                         <td><span class="rank ">17</span></td>
-                        <td><span class="code">000048.SZ</span></td>
-                        <td><span class="name">京基智农</span></td>
-                        <td class="price">¥19.68</td>
-                        <td class="pct-down">-1.20%</td>
-                        <td class="hide-mobile">26.28</td>
-                        <td class="hide-small hide-mobile">2.47</td>
-                        <td class="hide-small">104.4</td>
-                        <td class="hide-small">-1.20%</td>
-                        <td class="hide-small">12</td>
-                        <td><span class="score score-low">34</span></td>
-                        <td><span class="score score-mid">52</span></td>
+                        <td><span class="code">001203.SZ</span></td>
+                        <td><span class="name">大中矿业</span></td>
+                        <td class="price">¥40.85</td>
+                        <td class="pct-up">+1.47%</td>
+                        <td class="hide-mobile">79.09</td>
+                        <td class="hide-small hide-mobile">9.61</td>
+                        <td class="hide-small">626.3</td>
+                        <td class="hide-small">+1.47%</td>
+                        <td class="hide-small">20</td>
+                        <td><span class="score score-low">42</span></td>
+                        <td><span class="score score-low">40</span></td>
                         <td><span class="score score-low">41.2</span></td>
                     </tr>
 
@@ -578,17 +603,17 @@
 
                     <tr>
                         <td><span class="rank ">19</span></td>
-                        <td><span class="code">001203.SZ</span></td>
-                        <td><span class="name">大中矿业</span></td>
-                        <td class="price">¥40.85</td>
-                        <td class="pct-up">+1.47%</td>
-                        <td class="hide-mobile">79.09</td>
-                        <td class="hide-small hide-mobile">9.61</td>
-                        <td class="hide-small">626.3</td>
-                        <td class="hide-small">+1.47%</td>
-                        <td class="hide-small">20</td>
-                        <td><span class="score score-low">42</span></td>
-                        <td><span class="score score-low">40</span></td>
+                        <td><span class="code">000048.SZ</span></td>
+                        <td><span class="name">京基智农</span></td>
+                        <td class="price">¥19.68</td>
+                        <td class="pct-down">-1.20%</td>
+                        <td class="hide-mobile">26.28</td>
+                        <td class="hide-small hide-mobile">2.47</td>
+                        <td class="hide-small">104.4</td>
+                        <td class="hide-small">-1.20%</td>
+                        <td class="hide-small">12</td>
+                        <td><span class="score score-low">34</span></td>
+                        <td><span class="score score-mid">52</span></td>
                         <td><span class="score score-low">41.2</span></td>
                     </tr>
 
@@ -941,60 +966,6 @@
                         <div class="stock-card-left">
                             <span class="rank ">7</span>
                             <div>
-                                <div class="stock-card-code">000531.SZ</div>
-                                <div class="stock-card-name">穗恒运Ａ</div>
-                            </div>
-                        </div>
-                        <div style="text-align:right">
-                            <div class="stock-card-price">¥8.03</div>
-                            <div class="stock-card-pct pct-up">+1.90%</div>
-                        </div>
-                    </div>
-                    <div class="stock-card-detail">
-                        <div class="stock-card-item">
-                            <div class="label">市盈率</div>
-                            <div class="val">14.28</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">市净率</div>
-                            <div class="val">1.20</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">市值(亿)</div>
-                            <div class="val">83.6</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">换手率</div>
-                            <div class="val">12.7%</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">收益率</div>
-                            <div class="val">+1.90%</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">流动性</div>
-                            <div class="val">0</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">技术分</div>
-                            <div class="val">52</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">基本面</div>
-                            <div class="val">40</div>
-                        </div>
-                        <div class="stock-card-item">
-                            <div class="label">综合分</div>
-                            <div class="val" style="color:#667eea">47.2</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stock-card">
-                    <div class="stock-card-header">
-                        <div class="stock-card-left">
-                            <span class="rank ">8</span>
-                            <div>
                                 <div class="stock-card-code">000938.SZ</div>
                                 <div class="stock-card-name">紫光股份</div>
                             </div>
@@ -1028,6 +999,60 @@
                         <div class="stock-card-item">
                             <div class="label">流动性</div>
                             <div class="val">20</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">技术分</div>
+                            <div class="val">52</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">基本面</div>
+                            <div class="val">40</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">综合分</div>
+                            <div class="val" style="color:#667eea">47.2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stock-card">
+                    <div class="stock-card-header">
+                        <div class="stock-card-left">
+                            <span class="rank ">8</span>
+                            <div>
+                                <div class="stock-card-code">000531.SZ</div>
+                                <div class="stock-card-name">穗恒运Ａ</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right">
+                            <div class="stock-card-price">¥8.03</div>
+                            <div class="stock-card-pct pct-up">+1.90%</div>
+                        </div>
+                    </div>
+                    <div class="stock-card-detail">
+                        <div class="stock-card-item">
+                            <div class="label">市盈率</div>
+                            <div class="val">14.28</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">市净率</div>
+                            <div class="val">1.20</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">市值(亿)</div>
+                            <div class="val">83.6</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">换手率</div>
+                            <div class="val">12.7%</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">收益率</div>
+                            <div class="val">+1.90%</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">流动性</div>
+                            <div class="val">0</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">技术分</div>
@@ -1481,47 +1506,47 @@
                         <div class="stock-card-left">
                             <span class="rank ">17</span>
                             <div>
-                                <div class="stock-card-code">000048.SZ</div>
-                                <div class="stock-card-name">京基智农</div>
+                                <div class="stock-card-code">001203.SZ</div>
+                                <div class="stock-card-name">大中矿业</div>
                             </div>
                         </div>
                         <div style="text-align:right">
-                            <div class="stock-card-price">¥19.68</div>
-                            <div class="stock-card-pct pct-down">-1.20%</div>
+                            <div class="stock-card-price">¥40.85</div>
+                            <div class="stock-card-pct pct-up">+1.47%</div>
                         </div>
                     </div>
                     <div class="stock-card-detail">
                         <div class="stock-card-item">
                             <div class="label">市盈率</div>
-                            <div class="val">26.28</div>
+                            <div class="val">79.09</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">市净率</div>
-                            <div class="val">2.47</div>
+                            <div class="val">9.61</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">市值(亿)</div>
-                            <div class="val">104.4</div>
+                            <div class="val">626.3</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">换手率</div>
-                            <div class="val">1.8%</div>
+                            <div class="val">3.2%</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">收益率</div>
-                            <div class="val">-1.20%</div>
+                            <div class="val">+1.47%</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">流动性</div>
-                            <div class="val">12</div>
+                            <div class="val">20</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">技术分</div>
-                            <div class="val">34</div>
+                            <div class="val">42</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">基本面</div>
-                            <div class="val">52</div>
+                            <div class="val">40</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">综合分</div>
@@ -1589,47 +1614,47 @@
                         <div class="stock-card-left">
                             <span class="rank ">19</span>
                             <div>
-                                <div class="stock-card-code">001203.SZ</div>
-                                <div class="stock-card-name">大中矿业</div>
+                                <div class="stock-card-code">000048.SZ</div>
+                                <div class="stock-card-name">京基智农</div>
                             </div>
                         </div>
                         <div style="text-align:right">
-                            <div class="stock-card-price">¥40.85</div>
-                            <div class="stock-card-pct pct-up">+1.47%</div>
+                            <div class="stock-card-price">¥19.68</div>
+                            <div class="stock-card-pct pct-down">-1.20%</div>
                         </div>
                     </div>
                     <div class="stock-card-detail">
                         <div class="stock-card-item">
                             <div class="label">市盈率</div>
-                            <div class="val">79.09</div>
+                            <div class="val">26.28</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">市净率</div>
-                            <div class="val">9.61</div>
+                            <div class="val">2.47</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">市值(亿)</div>
-                            <div class="val">626.3</div>
+                            <div class="val">104.4</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">换手率</div>
-                            <div class="val">3.2%</div>
+                            <div class="val">1.8%</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">收益率</div>
-                            <div class="val">+1.47%</div>
+                            <div class="val">-1.20%</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">流动性</div>
-                            <div class="val">20</div>
+                            <div class="val">12</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">技术分</div>
-                            <div class="val">42</div>
+                            <div class="val">34</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">基本面</div>
-                            <div class="val">40</div>
+                            <div class="val">52</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">综合分</div>
@@ -1695,7 +1720,7 @@
         
         <div class="market-review">
             <h3>📊 大盘复盘 · 2026-03-25</h3>
-            <div class="review-indices"><div class="review-index"><span>上证指数</span><span style="color:#dc3545">3931.84 (+1.30%)</span></div><div class="review-index"><span>深证成指</span><span style="color:#dc3545">13801.00 (+1.95%)</span></div><div class="review-index"><span>创业板指</span><span style="color:#dc3545">3316.97 (+2.01%)</span></div></div>
+            <div class="review-indices"><div class="review-index"><span>上证指数</span><span style="color:#dc3545">3931.84 (+1.30%)</span></div><div class="review-index"><span>深证成指</span><span style="color:#dc3545">13801.00 (+1.95%)</span></div><div class="review-index"><span>创业板指</span><span style="color:#dc3545">3316.97 (+2.01%)</span></div><div class="review-index"><span>科创50</span><span style="color:#dc3545">1315.41 (+1.91%)</span></div></div>
         </div>
     
         <div class="footer">
