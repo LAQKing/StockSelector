@@ -31,8 +31,9 @@ def _analyze_single(code, realtime_dict, tech_weight, fund_weight, min_score):
         if total < min_score:
             return None
 
+        code_full = f"{code}.SZ" if not code.startswith("6") else f"{code}.SH"
         return {
-            "code":           code,
+            "code":           code_full,
             "name":           realtime_dict.get("name", ""),
             "price":          realtime_dict.get("price"),
             "pct_change":     realtime_dict.get("pct_change"),
@@ -48,18 +49,20 @@ def _analyze_single(code, realtime_dict, tech_weight, fund_weight, min_score):
             "fund_valuation": fund["valuation"],
             "fund_profit":    fund["profitability"],
             "fund_growth":    fund["growth"],
+            "fund_liquidity": fund["liquidity"],
             "total_score":    round(total, 1),
+            "pct_change":     realtime_dict.get("pct_change"),
         }
     except Exception:
         return None
 
 
 def run_selection(
-    top_n: int = 10,
+    top_n: int = 20,
     tech_weight: float = 0.6,
     fund_weight: float = 0.4,
     min_score: float = 40.0,
-    max_workers: int = 8,
+    max_workers: int = 16,
 ) -> pd.DataFrame:
     """
     执行智能选股（多线程并发版）
@@ -93,7 +96,12 @@ def run_selection(
         return pd.DataFrame()
 
     filtered_codes = df_realtime["code"].tolist()
-    print(f"   {len(filtered_codes)} stocks remaining")
+    max_analyze = 500
+    if len(filtered_codes) > max_analyze:
+        filtered_codes = filtered_codes[:max_analyze]
+        print(f"   {len(filtered_codes)} stocks remaining (capped for performance)")
+    else:
+        print(f"   {len(filtered_codes)} stocks remaining")
 
     realtime_map = {row["code"]: row.to_dict() for _, row in df_realtime.iterrows()}
 

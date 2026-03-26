@@ -14,28 +14,35 @@ CONFIG_FILE = "config.json"
 
 
 def load_config():
+    default_config = {
+        "top": 20,
+        "min_score": 0,
+        "tech_weight": 0.6,
+        "fund_weight": 0.4,
+        "interval_minutes": 60,
+        "github": {"auto_commit": True, "commit_message": "Auto update stock selection results"}
+    }
     if not os.path.exists(CONFIG_FILE):
-        return {
-            "top": 10,
-            "min_score": 0,
-            "tech_weight": 0.6,
-            "fund_weight": 0.4,
-            "interval_minutes": 60,
-            "github": {"auto_commit": True, "commit_message": "Auto update stock selection results"}
-        }
+        return default_config
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+        cfg = json.load(f)
+        # 合并默认配置，确保所有键都存在
+        for key, value in default_config.items():
+            if key not in cfg:
+                cfg[key] = value
+        if "github" not in cfg:
+            cfg["github"] = default_config["github"]
+        return cfg
 
 
 def run_selection(cfg):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     cmd = [
         "python", "main.py",
-        "--top", str(cfg.get("top", 10)),
-        "--min-score", str(cfg.get("min_score", 40)),
+        "--top", str(cfg.get("top", 20)),
+        "--min-score", str(cfg.get("min_score", 0)),
         "--tech-weight", str(cfg.get("tech_weight", 0.6)),
         "--fund-weight", str(cfg.get("fund_weight", 0.4)),
-        "--auto-retry",
     ]
     print(f"\n{'='*60}")
     print(f"  Executing stock selection  |  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -95,35 +102,70 @@ def git_push(cfg):
         print(f"Git error: {e}")
 
 
+UPDATE_TIMES = ["09:40", "11:30", "14:55"]
+
+
+def should_run():
+    """检查当前时间是否在更新列表中"""
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    return current_time in UPDATE_TIMES
+
+
+def wait_until_next_run():
+    """等待到下一个更新时间"""
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    
+    if current_time in UPDATE_TIMES:
+        return 60
+    
+    for target_time in UPDATE_TIMES:
+        target_hour, target_minute = map(int, target_time.split(":"))
+        target = now.replace(hour=target_hour, minute=target_minute, second=0, microsecond=0)
+        if target > now:
+            wait_seconds = (target - now).total_seconds()
+            return wait_seconds
+    
+    next_day = now.replace(hour=9, minute=30, second=0, microsecond=0)
+    if now.hour >= 14 or (now.hour == 14 and now.minute >= 55):
+        from datetime import timedelta
+        next_day += timedelta(days=1)
+    wait_seconds = (next_day - now).total_seconds()
+    return wait_seconds
+
+
 def main():
     cfg = load_config()
-    interval = cfg.get("interval_minutes", 60) * 60
-    
-    run_once = "--once" in sys.argv
     
     print(f"Config loaded")
-    print(f"   Interval: {cfg.get('interval_minutes', 60)} minutes")
+    print(f"   Update times: {', '.join(UPDATE_TIMES)}")
     print(f"   Auto push: {cfg.get('github', {}).get('auto_commit', True)}")
-    print(f"   Mode: {'Run once' if run_once else 'Loop'}")
     print(f"   Press Ctrl+C to stop\n")
 
-    if run_once:
-        success = run_selection(cfg)
-        if success:
-            generate_html()
-            git_push(cfg)
-        else:
-            print("No stocks selected, skipping update")
+    # 立即执行一次
+    success = run_selection(cfg)
+    if success:
+        generate_html()
+        git_push(cfg)
     else:
-        while True:
+        print("No stocks selected, skipping update")
+    
+    # 等待下一个时间点
+    while True:
+        wait_seconds = wait_until_next_run()
+        print(f"Next update in {int(wait_seconds//3600)}h {int((wait_seconds%3600)//60)}m...")
+        time.sleep(wait_seconds)
+        
+        if should_run():
             success = run_selection(cfg)
             if success:
                 generate_html()
                 git_push(cfg)
             else:
                 print("No stocks selected, skipping update")
-            print(f"\nWaiting {cfg.get('interval_minutes', 60)} minutes...")
-            time.sleep(interval)
+            
+            time.sleep(120)
 
 
 if __name__ == "__main__":

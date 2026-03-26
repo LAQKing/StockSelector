@@ -1,68 +1,54 @@
 """
 main.py - 入口文件（单线程稳定版）
 用法：python main.py [--top N] [--min-score S]
+配置文件: config.json
 """
 import argparse
+import json
+import os
 import pandas as pd
 import traceback
 import sys
 from datetime import datetime
 from selector import run_selection
 
+CONFIG_FILE = "config.json"
+
+
+def load_config():
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
 
 def main():
+    config = load_config()
+    
     parser = argparse.ArgumentParser(description="Stock Selector")
-    parser.add_argument("--top",        type=int,   default=10,   help="Top N stocks (default 10)")
-    parser.add_argument("--min-score",  type=float, default=40.0, help="Min score (default 40)")
-    parser.add_argument("--tech-weight", type=float, default=0.6, help="Tech weight (default 0.6)")
-    parser.add_argument("--fund-weight", type=float, default=0.4, help="Fund weight (default 0.4)")
-    parser.add_argument("--auto-retry",  action="store_true", help="Auto reduce score if no stocks found")
+    parser.add_argument("--top", type=int, default=config.get("top", 20), help="Top N stocks")
+    parser.add_argument("--min-score", type=float, default=config.get("min_score", 0), help="Min score")
+    parser.add_argument("--tech-weight", type=float, default=config.get("tech_weight", 0.6), help="Tech weight")
+    parser.add_argument("--fund-weight", type=float, default=config.get("fund_weight", 0.4), help="Fund weight")
     args = parser.parse_args()
 
-    min_score = args.min_score
-    if args.auto_retry:
-        for score in [min_score, min_score - 10, min_score - 20, min_score - 30]:
-            if score < 0:
-                break
-            print(f"\n{'='*60}")
-            print(f"  Stock Selector v2.1  |  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-            print(f"{'='*60}")
-            print(f"  Tech weight: {args.tech_weight}  |  Fund weight: {args.fund_weight}")
-            print(f"  Min score: {score}  |  Top {args.top} stocks")
-            
-            try:
-                df = run_selection(
-                    top_n=args.top,
-                    tech_weight=args.tech_weight,
-                    fund_weight=args.fund_weight,
-                    min_score=score,
-                )
-            except Exception as e:
-                print(f"[ERROR] {e}")
-                traceback.print_exc()
-                df = pd.DataFrame()
-
-            if not df.empty:
-                break
-            print(f"No stocks found with score >= {score}, retrying with lower score...")
-    else:
-        print(f"\n{'='*60}")
-        print(f"  Stock Selector v2.1  |  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-        print(f"{'='*60}")
-        print(f"  Tech weight: {args.tech_weight}  |  Fund weight: {args.fund_weight}")
-        print(f"  Min score: {min_score}  |  Top {args.top} stocks")
-        
-        try:
-            df = run_selection(
-                top_n=args.top,
-                tech_weight=args.tech_weight,
-                fund_weight=args.fund_weight,
-                min_score=min_score,
-            )
-        except Exception as e:
-            print(f"[ERROR] {e}")
-            traceback.print_exc()
-            df = pd.DataFrame()
+    print(f"\n{'='*60}")
+    print(f"  Stock Selector v2.1  |  {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"{'='*60}")
+    print(f"  Tech weight: {args.tech_weight}  |  Fund weight: {args.fund_weight}")
+    print(f"  Min score: {args.min_score}  |  Top {args.top} stocks")
+    
+    try:
+        df = run_selection(
+            top_n=args.top,
+            tech_weight=args.tech_weight,
+            fund_weight=args.fund_weight,
+            min_score=args.min_score,
+        )
+    except Exception as e:
+        print(f"[ERROR] {e}")
+        traceback.print_exc()
+        df = pd.DataFrame()
 
     if df.empty:
         print("No stocks found. Try lowering --min-score.")

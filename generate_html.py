@@ -16,6 +16,8 @@ else:
     print(f"Loaded result file: {latest}")
 
 
+
+
 html = '''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -169,9 +171,23 @@ html = '''<!DOCTYPE html>
         .footer {
             text-align: center;
             padding: 20px;
-            background: #f8f9fa;
-            color: #6c757d;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            color: #856404;
             font-size: 12px;
+            border-top: 3px solid #ffc107;
+        }
+        .footer-item {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .footer-item:last-child {
+            color: #dc3545;
+            font-weight: 600;
+            background: rgba(220,53,69,0.1);
+            border: 1px solid rgba(220,53,69,0.3);
         }
         .card-list { display: none; }
         .stock-card {
@@ -218,7 +234,7 @@ html = '''<!DOCTYPE html>
         }
         @media (max-width: 480px) {
             .header { padding: 20px 15px; }
-            .header h1 { font-size: 18px; }
+            .header h1 { font-size: 18px; display: none; }
             .summary { grid-template-columns: 1fr 1fr; }
             .hide-small { display: none; }
         }
@@ -266,6 +282,9 @@ html = '''<!DOCTYPE html>
                         <th>涨跌幅</th>
                         <th class="hide-mobile">市盈率</th>
                         <th class="hide-small hide-mobile">市净率</th>
+                        <th class="hide-small">市值(亿)</th>
+                        <th class="hide-small">收益率</th>
+                        <th class="hide-small">流动性</th>
                         <th>技术分</th>
                         <th>基本分</th>
                         <th>综合分</th>
@@ -292,8 +311,11 @@ for idx, row in df.iterrows():
     
     pe_val = row.get('pe')
     pb_val = row.get('pb')
-    pe_str = f"{pe_val:.2f}" if isinstance(pe_val, (int, float)) and not pd.isna(pe_val) else '-'
-    pb_str = f"{pb_val:.2f}" if isinstance(pb_val, (int, float)) and not pd.isna(pb_val) else '-'
+    market_cap_val = row.get('market_cap', 0)
+    fund_liquidity = row.get('fund_liquidity', 0)
+    pe_str = f"{pe_val:.2f}" if isinstance(pe_val, (int, float)) and not pd.isna(pe_val) and pe_val > 0 else '-'
+    pb_str = f"{pb_val:.2f}" if isinstance(pb_val, (int, float)) and not pd.isna(pb_val) and pb_val > 0 else '-'
+    market_cap_str = f"{market_cap_val/1e8:.1f}" if isinstance(market_cap_val, (int, float)) and not pd.isna(market_cap_val) and market_cap_val > 0 else '-'
     
     html += f'''
                     <tr>
@@ -304,6 +326,9 @@ for idx, row in df.iterrows():
                         <td class="{pct_class}">{pct_str}</td>
                         <td class="hide-mobile">{pe_str}</td>
                         <td class="hide-small hide-mobile">{pb_str}</td>
+                        <td class="hide-small">{market_cap_str}</td>
+                        <td class="hide-small">{pct_str}</td>
+                        <td class="hide-small">{fund_liquidity}</td>
                         <td><span class="score {tech_cls}">{tech_score:.0f}</span></td>
                         <td><span class="score {fund_cls}">{fund_score:.0f}</span></td>
                         <td><span class="score {total_cls}">{total_score:.1f}</span></td>
@@ -327,11 +352,16 @@ for idx, row in df.iterrows():
     tech_score = row.get('tech_score', 0)
     fund_score = row.get('fund_score', 0)
     total_score = row.get('total_score', 0)
+    fund_liquidity = row.get('fund_liquidity', 0)
     
     pe_val = row.get('pe')
     pb_val = row.get('pb')
-    pe_str = f"{pe_val:.2f}" if isinstance(pe_val, (int, float)) and not pd.isna(pe_val) else '-'
-    pb_str = f"{pb_val:.2f}" if isinstance(pb_val, (int, float)) and not pd.isna(pb_val) else '-'
+    market_cap_val = row.get('market_cap', 0)
+    turnover_rate_val = row.get('turnover_rate', 0)
+    pe_str = f"{pe_val:.2f}" if isinstance(pe_val, (int, float)) and not pd.isna(pe_val) and pe_val > 0 else '-'
+    pb_str = f"{pb_val:.2f}" if isinstance(pb_val, (int, float)) and not pd.isna(pb_val) and pb_val > 0 else '-'
+    market_cap_str = f"{market_cap_val/1e8:.1f}" if isinstance(market_cap_val, (int, float)) and not pd.isna(market_cap_val) and market_cap_val > 0 else '-'
+    turnover_rate_str = f"{turnover_rate_val:.1f}%" if isinstance(turnover_rate_val, (int, float)) and not pd.isna(turnover_rate_val) and turnover_rate_val > 0 else '-'
     
     html += f'''
                 <div class="stock-card">
@@ -350,16 +380,28 @@ for idx, row in df.iterrows():
                     </div>
                     <div class="stock-card-detail">
                         <div class="stock-card-item">
-                            <div class="label">PE</div>
+                            <div class="label">市盈率</div>
                             <div class="val">{pe_str}</div>
                         </div>
                         <div class="stock-card-item">
-                            <div class="label">PB</div>
+                            <div class="label">市净率</div>
                             <div class="val">{pb_str}</div>
                         </div>
                         <div class="stock-card-item">
+                            <div class="label">市值(亿)</div>
+                            <div class="val">{market_cap_str}</div>
+                        </div>
+                        <div class="stock-card-item">
                             <div class="label">换手率</div>
-                            <div class="val">{row.get('turnover_rate', 0):.1f}%</div>
+                            <div class="val">{turnover_rate_str}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">收益率</div>
+                            <div class="val">{pct_str}</div>
+                        </div>
+                        <div class="stock-card-item">
+                            <div class="label">流动性</div>
+                            <div class="val">{fund_liquidity}</div>
                         </div>
                         <div class="stock-card-item">
                             <div class="label">技术分</div>
@@ -377,14 +419,21 @@ for idx, row in df.iterrows():
                 </div>
 '''
 
-html += '''</div>        </div>
+html += f'''</div>
+        </div>
 
         <div class="footer">
-            智能选股系统 · 数据每日自动更新
+            <div class="footer-item">
+            评分标准：根据估值、盈利能力（净资产收益率、毛利率、每股收益）、成长性（近期涨幅，市值规模）、流动性（换手率）、去掉 ST / *ST / 退市、去掉涨停/跌停（避免追高杀跌）、价格 > 1 元（去仙股）、去掉停牌股（成交量为 0）、成交额 > 1000万（过滤成交不活跃股票）
+            </div>
+            <div class="footer-item">
+            提示：智能选股仅供学习、参考，请勿用于实盘交易
+            </div>
         </div>
     </div>
 </body>
 </html>'''
+
 
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html)
