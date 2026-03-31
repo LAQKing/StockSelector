@@ -34,18 +34,27 @@ def get_stock_list() -> pd.DataFrame:
     return pd.DataFrame()
 
 
-def get_daily_history(code: str, days: int = 120) -> pd.DataFrame:
+_history_cache = {}
+
+def get_daily_history(code: str, days: int = 60) -> pd.DataFrame:
     """
     获取单只股票日线历史数据
     :param code: 股票代码，如 '000001'
     :param days: 获取最近 N 天
     :return: DataFrame，含 date/open/high/low/close/volume/turnover
     """
-    # Try East Money first
+    global _history_cache
+    if code in _history_cache:
+        df = _history_cache[code]
+        if df is not None and len(df) >= days:
+            return df.head(days) if len(df) > days else df
+    
     df = _get_daily_history_eastmoney(code, days)
     if df.empty:
-        # Fallback to Sina
         df = _get_daily_history_sina(code, days)
+    
+    if not df.empty:
+        _history_cache[code] = df
     return df
 
 
@@ -122,15 +131,27 @@ def _get_daily_history_sina(code: str, days: int = 120) -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
+def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = None) -> pd.DataFrame:
     """
     获取多只股票实时行情（并发版）
     :param codes: 股票代码列表
     :param max_workers: 并发线程数
+    :param max_stocks: 最大股票数量，默认从配置文件读取
     :return: DataFrame
     """
+    import json
     from tqdm import tqdm
     from concurrent.futures import ThreadPoolExecutor, as_completed
+    
+    if max_stocks is None:
+        try:
+            with open("config.json", "r") as f:
+                config = json.load(f)
+                max_stocks = config.get("max_stocks", 2000)
+        except:
+            max_stocks = 2000
+    
+    codes = codes[:max_stocks]
 
     def _fetch_via_spot():
         """Use EastMoney spot API"""
@@ -167,7 +188,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
         """Use EastMoney HTTP API"""
         try:
             results = []
-            all_codes = codes[:2000]
+            all_codes = codes[:max_stocks]
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Referer": "https://quote.eastmoney.com",
@@ -222,7 +243,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
         """Use Sina财经 API"""
         try:
             results = []
-            all_codes = codes[:2000]
+            all_codes = codes[:max_stocks]
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Referer": "http://finance.sina.com.cn",
@@ -359,7 +380,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8) -> pd.DataFrame:
             return df_sina
 
     # Last fallback: use last close price from historical data (limited to 500 for speed)
-    target_codes = codes[:500]
+    target_codes = codes[:max_stocks]
     print(f"   Fallback: fetching quotes ({len(target_codes)} stocks, {max_workers} threads)...")
 
     results = []

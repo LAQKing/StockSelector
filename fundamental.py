@@ -154,11 +154,10 @@ def filter_basic(df_realtime: pd.DataFrame) -> pd.DataFrame:
             pd.to_numeric(df_realtime["volume"], errors="coerce").fillna(0) > 0
         ]
 
-    # 成交额 > 1000万（过滤成交不活跃股票）
+    # 成交额 > 0 且 > 1000万（非交易时段成交额可能为0，需要特殊处理）
     if "turnover" in df_realtime.columns:
-        df_realtime = df_realtime[
-            pd.to_numeric(df_realtime["turnover"], errors="coerce").fillna(0) > 1e7
-        ]
+        turnover = pd.to_numeric(df_realtime["turnover"], errors="coerce").fillna(0)
+        df_realtime = df_realtime[(turnover > 0) & (turnover > 1e7)]
 
     return df_realtime.reset_index(drop=True)
 
