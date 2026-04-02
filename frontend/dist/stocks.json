@@ -101,26 +101,6 @@
       "total_score": 36.4
     },
     {
-      "code": "688205.SH",
-      "name": "德科立",
-      "price": 206.01,
-      "pct_change": 1.9851485148514807,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 54,
-      "tech_trend": 23,
-      "tech_momentum": 23,
-      "tech_volume": 3,
-      "fund_score": 10,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 36.4
-    },
-    {
       "code": "002437.SZ",
       "name": "誉衡药业",
       "price": 3.82,
@@ -137,6 +117,26 @@
       "fund_valuation": 0,
       "fund_profit": 0,
       "fund_growth": 7,
+      "fund_liquidity": 0,
+      "total_score": 36.4
+    },
+    {
+      "code": "688205.SH",
+      "name": "德科立",
+      "price": 206.01,
+      "pct_change": 1.9851485148514807,
+      "pe": 0,
+      "pb": 0,
+      "market_cap": 0,
+      "turnover_rate": 0,
+      "tech_score": 54,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 3,
+      "fund_score": 10,
+      "fund_valuation": 0,
+      "fund_profit": 0,
+      "fund_growth": 10,
       "fund_liquidity": 0,
       "total_score": 36.4
     },
@@ -201,6 +201,6 @@
       "total_score": 35.6
     }
   ],
-  "timestamp": "2026-04-02 17:48:04",
+  "timestamp": "2026-04-02 18:06:43",
   "count": 10
 }
