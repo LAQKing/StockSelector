@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <div v-if="pageLoading" class="page-loading">
+      <div class="loading-spinner"></div>
+      <p>加载中...</p>
+    </div>
+    
+    <div v-else class="page-content" :class="{ 'fade-in': !pageLoading }">
     <div class="header">
       <h1>A股智能选股系统</h1>
       <p>技术面 + 基本面综合评分</p>
@@ -183,6 +189,7 @@
       <p>评分标准：根据估值、盈利能力、成长性、流动性，去掉 ST / *ST / 退市、涨停/跌停、价格 > 1 元、成交额 > 1000万；计分权重：技术分 0.6，基本面 0.4</p>
       <p>提示：智能选股仅供学习、参考，请勿用于实盘交易</p>
     </div>
+    </div>
   </div>
 </template>
 
@@ -199,6 +206,7 @@ const form = ref({
 })
 
 const loading = ref(false)
+const pageLoading = ref(true)
 const stocks = ref([])
 const timestamp = ref('')
 const message = ref('')
@@ -245,16 +253,20 @@ function getCellClass({ columnIndex }) {
 }
 
 async function loadData() {
-  const result = await fetchFromJson()
-  if (result.success) {
-    stocks.value = result.data || []
-    timestamp.value = result.timestamp || ''
-    return
-  }
-  const result2 = await fetchStockData()
-  if (result2.success) {
-    stocks.value = result2.data || []
-    timestamp.value = result2.timestamp || ''
+  try {
+    const result = await fetchFromJson()
+    if (result.success) {
+      stocks.value = result.data || []
+      timestamp.value = result.timestamp || ''
+      return
+    }
+    const result2 = await fetchStockData()
+    if (result2.success) {
+      stocks.value = result2.data || []
+      timestamp.value = result2.timestamp || ''
+    }
+  } finally {
+    pageLoading.value = false
   }
 }
 
@@ -305,12 +317,56 @@ body {
 }
 
 .app-container {
-  max-min-width: 1400px;
+  max-width: 1400px;
   margin: 0 auto;
   background: white;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   overflow: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+.page-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.page-loading p {
+  margin-top: 16px;
+  font-size: 16px;
+}
+
+.page-content.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .header {
