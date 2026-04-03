@@ -1,6 +1,6 @@
 {
   "top": 10,
-  "min_score": 0,
+  "min_score": 20,
   "tech_weight": 0.6,
   "fund_weight": 0.4,
   "max_stocks": 5000,
