@@ -51,6 +51,28 @@ def save_stocks_json(data, timestamp):
         json.dump({"data": data, "timestamp": timestamp}, f, ensure_ascii=False, indent=2)
 
 
+def save_stocks_csv(data):
+    """保存选股结果到 CSV 文件"""
+    if not data:
+        return
+    project_dir = os.path.dirname(__file__)
+    
+    # 删除旧的 CSV 文件
+    for f in os.listdir(project_dir):
+        if f.startswith("result_") and f.endswith(".csv"):
+            try:
+                os.remove(os.path.join(project_dir, f))
+            except:
+                pass
+    
+    # 生成新 CSV 文件
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    csv_path = os.path.join(project_dir, f"result_{timestamp}.csv")
+    df = pd.DataFrame(data)
+    df.to_csv(csv_path, index=False, encoding="utf-8-sig")
+    print(f"[INFO] CSV 文件已保存: {csv_path}")
+
+
 import time
 import subprocess
 
@@ -97,16 +119,16 @@ def auto_build_and_deploy():
             subprocess.run('git config --global user.email "ci@local"', shell=True, capture_output=True)
             subprocess.run('git config --global user.name "CI"', shell=True, capture_output=True)
         
-        # 提交
+        # 提交并推送到 main 分支（由 GitHub Actions 自动部署到 gh-pages）
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
         subprocess.run(f'git commit -m "docs: update stock data {timestamp}"', shell=True, check=True, capture_output=True, cwd=project_root)
-        print("[INFO] 提交完成，准备推送...")
+        print("[INFO] 提交完成，推送到 main 分支...")
         
-        # 推送到 gh-pages 分支（带重试）
+        # 推送到 main 分支（带重试）
         success = False
         for i in range(3):
             try:
-                result = subprocess.run("git push origin HEAD:gh-pages --force", shell=True, capture_output=True, text=True, cwd=project_root, timeout=60)
+                result = subprocess.run("git push origin main", shell=True, capture_output=True, text=True, cwd=project_root, timeout=60)
                 if result.returncode == 0:
                     success = True
                     break
@@ -119,7 +141,7 @@ def auto_build_and_deploy():
             print("[ERROR] 推送失败，请检查网络或手动推送")
             return False
             
-        print("[INFO] 自动部署完成")
+        print("[INFO] 自动部署完成，GitHub Actions 将自动部署到 gh-pages")
         return True
     except subprocess.CalledProcessError as e:
         print(f"[ERROR] 自动部署失败: {e}")
@@ -173,6 +195,9 @@ def select_stocks():
 
         # 保存到 JSON 文件
         save_stocks_json(cache["data"], cache["timestamp"])
+
+        # 保存到 CSV 文件
+        save_stocks_csv(cache["data"])
 
         # 自动构建并推送（后台执行）
         auto_build_and_deploy_async()
