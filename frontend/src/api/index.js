@@ -1,10 +1,13 @@
 import axios from 'axios'
 
-const API_BASE = '/StockSelector/api'
+const isProd = import.meta.env.PROD
+
+const API_BASE = isProd ? '/StockSelector/api' : '/api'
 
 export async function fetchFromJson() {
+  const jsonPath = isProd ? '/StockSelector/data/stocks.json' : '/data/stocks.json'
   try {
-    const res = await axios.get('/StockSelector/data/stocks.json', { timeout: 3000 })
+    const res = await axios.get(jsonPath, { timeout: 3000 })
     return { success: true, data: res.data.data, timestamp: res.data.timestamp }
   } catch (e) {
     console.log('JSON file not found, trying API...')
