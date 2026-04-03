@@ -51,6 +51,10 @@ def save_stocks_json(data, timestamp):
         json.dump({"data": data, "timestamp": timestamp}, f, ensure_ascii=False, indent=2)
 
 
+import time
+import subprocess
+
+
 def auto_build_and_deploy():
     """自动构建前端并推送到 GitHub"""
     project_root = os.path.dirname(os.path.abspath(__file__))
@@ -93,13 +97,28 @@ def auto_build_and_deploy():
             subprocess.run('git config --global user.email "ci@local"', shell=True, capture_output=True)
             subprocess.run('git config --global user.name "CI"', shell=True, capture_output=True)
         
-        # 提交并推送
+        # 提交
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
         subprocess.run(f'git commit -m "docs: update stock data {timestamp}"', shell=True, check=True, capture_output=True, cwd=project_root)
         print("[INFO] 提交完成，准备推送...")
         
-        # 推送到 gh-pages 分支（GitHub Pages 使用）
-        subprocess.run("git push origin HEAD:gh-pages --force", shell=True, check=True, capture_output=True, cwd=project_root)
+        # 推送到 gh-pages 分支（带重试）
+        success = False
+        for i in range(3):
+            try:
+                result = subprocess.run("git push origin HEAD:gh-pages --force", shell=True, capture_output=True, text=True, cwd=project_root, timeout=60)
+                if result.returncode == 0:
+                    success = True
+                    break
+                print(f"[RETRY] 推送失败，尝试 {i+1}/3: {result.stderr}")
+            except subprocess.TimeoutExpired:
+                print(f"[RETRY] 推送超时，尝试 {i+1}/3")
+            time.sleep(10)
+        
+        if not success:
+            print("[ERROR] 推送失败，请检查网络或手动推送")
+            return False
+            
         print("[INFO] 自动部署完成")
         return True
     except subprocess.CalledProcessError as e:
