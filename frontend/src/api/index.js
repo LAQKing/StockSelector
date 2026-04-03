@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-const API_BASE = '/api'
+const API_BASE = '/StockSelector/api'
 
 export async function fetchFromJson() {
   try {
-    const res = await axios.get('/data/stocks.json', { timeout: 3000 })
+    const res = await axios.get('/StockSelector/data/stocks.json', { timeout: 3000 })
     return { success: true, data: res.data.data, timestamp: res.data.timestamp }
   } catch (e) {
     console.log('JSON file not found, trying API...')
