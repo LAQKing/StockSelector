@@ -25,7 +25,7 @@ def main():
     print("=" * 60)
 
     # 检查 stocks.json 是否存在
-    json_path = "frontend/public/data/stocks.json"
+    json_path = "frontend/public/assets/stocks.json"
     if not os.path.exists(json_path):
         print(f"错误: {json_path} 不存在，请先运行 python main.py")
         sys.exit(1)

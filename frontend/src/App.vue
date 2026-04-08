@@ -27,11 +27,14 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleRun" :loading="loading">开始选股</el-button>
+          <el-button type="danger" @click="handleStop" :disabled="!loading">停止选股</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <!-- <el-alert v-if="message" :title="message" :type="messageType" show-icon :closable="false" class="alert" /> -->
+    
+    <el-alert v-if="message" :title="message" :type="messageType" show-icon :closable="false" class="alert" />
 
     <div v-if="loading" class="loading">
       <el-icon class="is-loading"><Loading /></el-icon>
@@ -196,13 +199,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { Loading } from '@element-plus/icons-vue'
-import { fetchStockData, runSelection, fetchFromJson } from './api/index.js'
+import { fetchStockData, runSelection, fetchFromJson, stopSelection, getStatus, getResult } from './api/index.js'
 
 const form = ref({
   top: 10,
-  minScore: 20,
-  techWeight: 0.6,
-  fundWeight: 0.4
+  minScore: 40,
+  techWeight: 0.8,
+  fundWeight: 0.2
 })
 
 const loading = ref(false)
@@ -211,6 +214,7 @@ const stocks = ref([])
 const timestamp = ref('')
 const message = ref('')
 const messageType = ref('info')
+let pollInterval = null
 
 const avgChange = computed(() => {
   if (!stocks.value.length) return '0.00'
@@ -280,20 +284,51 @@ async function handleRun() {
       tech_weight: form.value.techWeight,
       fund_weight: form.value.fundWeight
     })
-    if (res.success) {
-      stocks.value = res.data || []
-      timestamp.value = res.timestamp || ''
-      message.value = `选股完成，共找到 ${res.count} 只股票`
-      messageType.value = 'success'
-    } else {
+    if (!res.success) {
       message.value = res.message || '选股失败'
       messageType.value = 'error'
+      loading.value = false
+      return
     }
+    
+    // 轮询等待结果
+    pollInterval = setInterval(async () => {
+      const result = await getResult()
+      if (result.done) {
+        clearInterval(pollInterval)
+        pollInterval = null
+        loading.value = false
+        if (result.success) {
+          stocks.value = result.data || []
+          timestamp.value = result.timestamp || ''
+          message.value = `选股完成，共找到 ${result.count} 只股票`
+          messageType.value = 'success'
+        } else {
+          message.value = result.message || '选股失败'
+          messageType.value = 'error'
+        }
+      }
+    }, 5000)
   } catch (e) {
     message.value = `请求失败: ${e.message}`
     messageType.value = 'error'
-  } finally {
     loading.value = false
+  }
+}
+
+async function handleStop() {
+  if (pollInterval) {
+    clearInterval(pollInterval)
+    pollInterval = null
+  }
+  try {
+    const res = await stopSelection()
+    message.value = res.message || '选股已停止'
+    messageType.value = 'warning'
+    loading.value = false
+  } catch (e) {
+    message.value = `停止失败: ${e.message}`
+    messageType.value = 'error'
   }
 }
 
@@ -397,6 +432,10 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+}
+
+.control-form .el-form-item .el-button {
+  margin-left: 8px;
 }
 
 .alert {

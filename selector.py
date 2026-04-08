@@ -16,6 +16,14 @@ from data_fetcher import (
 from indicators import add_indicators, score_technical
 from fundamental import score_fundamental, filter_basic
 
+stop_flag = False
+
+
+def set_stop_flag():
+    """设置停止标志"""
+    global stop_flag
+    stop_flag = True
+
 
 def load_config():
     config_file = "config.json"
@@ -161,6 +169,9 @@ def run_selection(
     results = []
     print(f"[INFO] Analyzing stocks ({max_workers} threads)...")
     start_time = time.time()
+    
+    global stop_flag
+    stop_flag = False
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {
@@ -177,7 +188,13 @@ def run_selection(
         }
 
         for future in tqdm(as_completed(futures), total=len(futures), desc="分析进度"):
-            result = future.result()
+            if stop_flag:
+                print("[INFO] 用户请求停止，终止分析")
+                break
+            try:
+                result = future.result(timeout=30)
+            except Exception:
+                continue
             if result is not None:
                 results.append(result)
 

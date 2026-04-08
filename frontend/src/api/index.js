@@ -5,7 +5,8 @@ const isProd = import.meta.env.PROD
 const API_BASE = isProd ? '/StockSelector/api' : '/api'
 
 export async function fetchFromJson() {
-  const jsonPath = isProd ? '/StockSelector/data/stocks.json' : '/data/stocks.json'
+  const base = '/StockSelector'
+  const jsonPath = `${base}/assets/stocks.json`
   try {
     const res = await axios.get(jsonPath, { timeout: 3000 })
     return { success: true, data: res.data.data, timestamp: res.data.timestamp }
@@ -29,5 +30,20 @@ export async function fetchStockData() {
 
 export async function runSelection(params) {
   const res = await axios.post(`${API_BASE}/select`, params)
+  return res.data
+}
+
+export async function getResult() {
+  const res = await axios.get(`${API_BASE}/result`)
+  return res.data
+}
+
+export async function stopSelection() {
+  const res = await axios.post(`${API_BASE}/stop`)
+  return res.data
+}
+
+export async function getStatus() {
+  const res = await axios.get(`${API_BASE}/status`)
   return res.data
 }

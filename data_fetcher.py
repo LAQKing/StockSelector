@@ -43,18 +43,9 @@ def get_daily_history(code: str, days: int = 60) -> pd.DataFrame:
     :param days: 获取最近 N 天
     :return: DataFrame，含 date/open/high/low/close/volume/turnover
     """
-    global _history_cache
-    if code in _history_cache:
-        df = _history_cache[code]
-        if df is not None and len(df) >= days:
-            return df.head(days) if len(df) > days else df
-    
     df = _get_daily_history_eastmoney(code, days)
     if df.empty:
         df = _get_daily_history_sina(code, days)
-    
-    if not df.empty:
-        _history_cache[code] = df
     return df
 
 
