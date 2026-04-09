@@ -26,6 +26,18 @@ jobs:
       - name: Run stock selection
         run: python main.py
 
+      - name: Copy stock data to frontend
+        run: |
+          mkdir -p frontend/public/assets
+          python -c "
+          import pandas as pd
+          import json
+          df = pd.read_csv('result_*.csv')
+          data = df.to_dict(orient='records')
+          with open('frontend/public/assets/stocks.json', 'w', encoding='utf-8') as f:
+              json.dump({'data': data, 'timestamp': 'auto'}, f, ensure_ascii=False, indent=2)
+          "
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
