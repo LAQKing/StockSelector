@@ -15,29 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run stock selection
-        run: python main.py
-
-      - name: Copy stock data to frontend
-        run: |
-          mkdir -p frontend/public/assets
-          python -c "
-          import pandas as pd
-          import json
-          df = pd.read_csv('result_*.csv')
-          data = df.to_dict(orient='records')
-          with open('frontend/public/assets/stocks.json', 'w', encoding='utf-8') as f:
-              json.dump({'data': data, 'timestamp': 'auto'}, f, ensure_ascii=False, indent=2)
-          "
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -46,12 +23,13 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm install
+          npm install -g pnpm
+          pnpm install
 
       - name: Build frontend
         run: |
           cd frontend
-          npm run build
+          pnpm build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

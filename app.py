@@ -94,7 +94,7 @@ def auto_build_and_deploy():
         subprocess.run(f"git add -f {dist_dir}", shell=True, check=True, capture_output=True)
         
         # 也添加 stocks.json
-        stocks_json = os.path.join(project_root, "frontend", "public", "data", "stocks.json")
+        stocks_json = os.path.join(project_root, "frontend", "public", "assets", "stocks.json")
         if os.path.exists(stocks_json):
             subprocess.run(f'git add -f "{stocks_json}"', shell=True, check=True, capture_output=True)
         
