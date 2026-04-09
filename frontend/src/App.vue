@@ -7,7 +7,7 @@
     
     <div v-else class="page-content" :class="{ 'fade-in': !pageLoading }">
     <div class="header">
-      <h1>A股智能选股系统</h1>
+      <!-- <h1>A股智能选股系统</h1> -->
       <p>技术面 + 基本面综合评分</p>
     </div>
 
@@ -87,6 +87,27 @@
               </span>
             </template>
           </el-table-column>
+          <el-table-column label="投资建议" min-width="100">
+            <template #default="{ row }">
+              <el-tag :type="getRecommendationType(row.recommendation)">{{ row.recommendation || '-' }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易信号" min-width="180">
+            <template #default="{ row }">
+              <div v-if="row.signals && row.signals.length" class="signals-cell">
+                <el-tag 
+                  v-for="(sig, idx) in row.signals.slice(0, 3)" 
+                  :key="idx" 
+                  :type="getSignalType(sig.type)" 
+                  size="small" 
+                  class="signal-tag"
+                >
+                  {{ sig.signal }}
+                </el-tag>
+              </div>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="pe" label="市盈率" min-width="90">
             <template #default="{ row }">
               {{ row.pe ? row.pe.toFixed(2) : '-' }}
@@ -120,6 +141,27 @@
           <el-table-column label="综合分" min-width="90">
             <template #default="{ row }">
               <el-tag type="primary">{{ row.total_score }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="投资建议" min-width="100">
+            <template #default="{ row }">
+              <el-tag :type="getRecommendationType(row.recommendation)">{{ row.recommendation || '-' }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易信号" min-width="180">
+            <template #default="{ row }">
+              <div v-if="row.signals && row.signals.length" class="signals-cell">
+                <el-tag 
+                  v-for="(sig, idx) in row.signals.slice(0, 3)" 
+                  :key="idx" 
+                  :type="getSignalType(sig.type)" 
+                  size="small" 
+                  class="signal-tag"
+                >
+                  {{ sig.signal }}
+                </el-tag>
+              </div>
+              <span v-else>-</span>
             </template>
           </el-table-column>
         </el-table>
@@ -177,6 +219,23 @@
               <div class="stock-card-item">
                 <div class="label">综合分</div>
                 <div class="val" style="color: #667eea">{{ stock.total_score }}</div>
+              </div>
+              <div class="stock-card-item">
+                <div class="label">建议</div>
+                <el-tag :type="getRecommendationType(stock.recommendation)" size="small">{{ stock.recommendation || '-' }}</el-tag>
+              </div>
+              <div v-if="stock.signals && stock.signals.length" class="stock-card-item signals-card-item">
+                <div class="label">信号</div>
+                <div class="signals-card">
+                  <el-tag 
+                    v-for="(sig, idx) in stock.signals.slice(0, 3)" 
+                    :key="idx" 
+                    :type="getSignalType(sig.type)" 
+                    size="small"
+                  >
+                    {{ sig.signal }}
+                  </el-tag>
+                </div>
               </div>
             </div>
           </div>
@@ -249,6 +308,20 @@ function getScoreType(score) {
   if (score >= 70) return 'success'
   if (score >= 50) return 'warning'
   return 'danger'
+}
+
+function getRecommendationType(rec) {
+  if (rec === '强烈推荐') return 'success'
+  if (rec === '推荐') return 'primary'
+  if (rec === '中性') return 'info'
+  if (rec === '观望') return 'warning'
+  return 'danger'
+}
+
+function getSignalType(type) {
+  if (type === 'bullish') return 'success'
+  if (type === 'bearish') return 'danger'
+  return 'info'
 }
 
 function getCellClass({ columnIndex }) {
@@ -510,6 +583,26 @@ body {
 
 .stock-table .pct-cell {
   font-weight: 600;
+}
+
+.signals-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.signal-tag {
+  margin: 2px;
+}
+
+.signals-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.signals-card-item {
+  flex-basis: 100%;
 }
 
 .pct-up {

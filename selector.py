@@ -14,6 +14,9 @@ from data_fetcher import (
     get_financial_indicator,
 )
 from indicators import add_indicators, score_technical
+from fundamental import score_fundamental
+from stock_analyzer import generate_signals, generate_recommendation
+from indicators import add_indicators, score_technical
 from fundamental import score_fundamental, filter_basic
 
 stop_flag = False
@@ -26,24 +29,8 @@ def set_stop_flag():
 
 
 def load_config():
-    config_file = "config.json"
-    default = {
-        "top": 10,
-        "min_score": 0,
-        "tech_weight": 0.6,
-        "fund_weight": 0.4,
-        "max_stocks": 5000,
-        "max_analyze": 500,
-        "max_workers": 16,
-    }
-    if os.path.exists(config_file):
-        with open(config_file, "r", encoding="utf-8") as f:
-            cfg = json.load(f)
-            for k, v in default.items():
-                if k not in cfg:
-                    cfg[k] = v
-            return cfg
-    return default
+    with open("config.json", "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def _analyze_single(code, realtime_dict, tech_weight, fund_weight, min_score):
@@ -62,6 +49,9 @@ def _analyze_single(code, realtime_dict, tech_weight, fund_weight, min_score):
         total = tech["total"] * tech_weight + fund["total"] * fund_weight
         if total < min_score:
             return None
+
+        signals = generate_signals(hist, tech, fund)
+        recommendation = generate_recommendation(total, signals)
 
         code_full = f"{code}.SZ" if not code.startswith("6") else f"{code}.SH"
         return {
@@ -83,7 +73,8 @@ def _analyze_single(code, realtime_dict, tech_weight, fund_weight, min_score):
             "fund_growth":    fund["growth"],
             "fund_liquidity": fund["liquidity"],
             "total_score":    round(total, 1),
-            "pct_change":     realtime_dict.get("pct_change"),
+            "signals":        signals,
+            "recommendation": recommendation,
         }
     except Exception:
         return None

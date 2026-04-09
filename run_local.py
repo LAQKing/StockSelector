@@ -14,25 +14,8 @@ CONFIG_FILE = "config.json"
 
 
 def load_config():
-    default_config = {
-        "top": 20,
-        "min_score": 0,
-        "tech_weight": 0.6,
-        "fund_weight": 0.4,
-        "interval_minutes": 60,
-        "github": {"auto_commit": True, "commit_message": "Auto update stock selection results"}
-    }
-    if not os.path.exists(CONFIG_FILE):
-        return default_config
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        cfg = json.load(f)
-        # 合并默认配置，确保所有键都存在
-        for key, value in default_config.items():
-            if key not in cfg:
-                cfg[key] = value
-        if "github" not in cfg:
-            cfg["github"] = default_config["github"]
-        return cfg
+        return json.load(f)
 
 
 def run_selection(cfg):

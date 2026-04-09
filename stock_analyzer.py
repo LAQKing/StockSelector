@@ -9,6 +9,11 @@ from indicators import add_indicators, score_technical
 from fundamental import score_fundamental
 
 
+def load_config():
+    with open("config.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def analyze_stock(code: str) -> dict:
     """
     深度分析单只股票
@@ -118,7 +123,10 @@ def analyze_stock(code: str) -> dict:
         result["signals"] = signals
 
         # 7. 投资建议
-        total_score = tech_score["total"] * 0.6 + fund_score["total"] * 0.4
+        config = load_config()
+        tech_weight = config.get("tech_weight", 0.6)
+        fund_weight = config.get("fund_weight", 0.4)
+        total_score = tech_score["total"] * tech_weight + fund_score["total"] * fund_weight
         result["recommendation"] = generate_recommendation(total_score, signals)
 
         result["success"] = True

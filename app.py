@@ -18,20 +18,8 @@ STOCKS_JSON = os.path.join(DATA_DIR, "stocks.json")
 
 
 def load_config():
-    default_config = {
-        "top": 10,
-        "min_score": 20,
-        "tech_weight": 0.6,
-        "fund_weight": 0.4,
-    }
-    if not os.path.exists(CONFIG_FILE):
-        return default_config
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        cfg = json.load(f)
-        for key, value in default_config.items():
-            if key not in cfg:
-                cfg[key] = value
-        return cfg
+        return json.load(f)
 
 
 app = Flask(__name__)
