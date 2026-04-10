@@ -47,3 +47,12 @@ export async function getStatus() {
   const res = await axios.get(`${API_BASE}/status`)
   return res.data
 }
+
+export async function analyzeStock(code) {
+  try {
+    const res = await axios.get(`${API_BASE}/analyze/${code}`)
+    return res.data
+  } catch (e) {
+    return { success: false, error: e.message }
+  }
+}

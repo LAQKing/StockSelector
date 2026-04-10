@@ -34,6 +34,22 @@ def get_stock_list() -> pd.DataFrame:
     return pd.DataFrame()
 
 
+def _init_stock_mapping():
+    """初始化股票代码映射"""
+    global _STOCK_MAPPING
+    try:
+        df = get_stock_list()
+        if not df.empty:
+            _STOCK_MAPPING = dict(zip(df["code"].astype(str), df["name"].astype(str)))
+            print(f"[INFO] 股票列表加载完成: {len(_STOCK_MAPPING)} 只")
+    except Exception as e:
+        print(f"[WARN] 股票列表加载失败: {e}")
+
+
+# 启动时初始化
+_init_stock_mapping()
+
+
 _history_cache = {}
 
 def get_daily_history(code: str, days: int = 60) -> pd.DataFrame:
@@ -389,20 +405,103 @@ def get_financial_indicator(code: str) -> dict:
     """
     获取股票基本面财务指标（最新一期）
     :param code: 股票代码
-    :return: dict，含 roe/eps/revenue_growth 等
+    :return: dict，含 roe/资产负债率 等
     """
     try:
         df = ak.stock_financial_analysis_indicator(symbol=code, start_year="2023")
         if df.empty:
             return {}
         latest = df.iloc[0]
-        return {
+        
+        result = {
             "roe": _safe_float(latest.get("净资产收益率(%)")),
-            "eps": _safe_float(latest.get("基本每股收益(元)")),
-            "gross_margin": _safe_float(latest.get("销售毛利率(%)")),
+            "debt_ratio": _safe_float(latest.get("资产负债率(%)")),
         }
+        
+        return result
     except Exception:
         return {}
+
+
+def get_stock_realtime(code: str) -> dict:
+    """
+    获取单只股票实时行情
+    :param code: 股票代码
+    :return: dict，含 pe/pb/market_cap/turnover_rate 等
+    """
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Referer": "https://quote.eastmoney.com",
+            "Accept": "*/*",
+        }
+        secid = f"1.{code}" if code.startswith("6") else f"0.{code}"
+        url = f"https://push2.eastmoney.com/api/qt/ulist.np/get?pn=1&pz=1&po=1&np=1&fltt=2&invt=2&fid=f3&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23&secids={secid}&fields=f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18,f20,f21,f23,f24,f25,f37,f38,f39,f40,f41,f45,f57,f62,f115,f128,f140,f141"
+        resp = requests.get(url, headers=headers, timeout=15)
+        if resp.status_code == 200:
+            data = resp.json()
+            if data.get("data") and data["data"].get("diff"):
+                item = data["data"]["diff"][0]
+                return {
+                    "pe": _safe_float(item.get("f9")),
+                    "pb": _safe_float(item.get("f23")),
+                    "market_cap": _safe_float(item.get("f20")),
+                    "float_cap": _safe_float(item.get("f21")),
+                    "turnover_rate": _safe_float(item.get("f8")),
+                }
+    except Exception as e:
+        print(f"[WARN] 获取实时行情失败: {e}")
+    return {}
+
+
+def get_financial_detail(code: str) -> dict:
+    """
+    获取股票财务详情（每股收益、毛利率等）
+    使用 EastMoney 财务分析接口
+    """
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Accept": "application/json",
+        }
+        # 上海sh / 深圳sz
+        market = "SH" if code.startswith("6") else "SZ"
+        url = f"https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/PageAjax?code={market}{code}"
+        resp = requests.get(url, headers=headers, timeout=15)
+        
+        if resp.status_code == 200:
+            text = resp.text
+            # 从HTML中提取JSON数据
+            import re
+            # 尝试找到 var 定义的财务数据
+            patterns = [
+                r'var\s+totalData\s*=\s*(\{[^;]+\})',
+                r'"grossMarginRate"\s*:\s*([0-9.]+)',
+                r'"basicEps"\s*:\s*([0-9.]+)',
+                r'"roe"\s*:\s*([0-9.]+)',
+            ]
+            result = {}
+            
+            # 尝试解析页面中的财务数据
+            if '"grossMarginRatio"' in text or '毛利率' in text:
+                # 尝试匹配财务数据
+                match = re.search(r'"grossMarginRatio"\s*:\s*([0-9.]+)', text)
+                if match:
+                    result["gross_margin"] = float(match.group(1)) * 100
+                
+                match = re.search(r'"basicEps"\s*:\s*([0-9.]+)', text)
+                if match:
+                    result["eps"] = float(match.group(1))
+                
+                match = re.search(r'"roe"\s*:\s*([0-9.]+)', text)
+                if match:
+                    result["roe"] = float(match.group(1))
+            
+            if result:
+                return result
+    except Exception as e:
+        print(f"[WARN] 获取财务详情失败: {e}")
+    return {}
 
 
 def _safe_float(val) -> float:

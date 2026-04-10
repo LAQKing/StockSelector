@@ -6,238 +6,96 @@
     </div>
     
     <div v-else class="page-content" :class="{ 'fade-in': !pageLoading }">
-    <div class="header">
-      <!-- <h1>A股智能选股系统</h1> -->
-      <p>技术面 + 基本面综合评分</p>
-    </div>
+      <!-- 个股分析页面 -->
+      <StockAnalysis v-if="currentView === 'analysis'" :init-code="stockCode" @back="currentView = 'selection'" />
+      
+      <!-- 选股页面 -->
+      <div v-else>
+        <div class="header">
+          <p>技术面 + 基本面综合评分</p>
+        </div>
 
-    <div class="controls">
-      <el-form :inline="true" :model="form" class="control-form">
-        <el-form-item label="返回数量">
-          <el-input-number v-model="form.top" :min="1" :max="100" />
-        </el-form-item>
-        <el-form-item label="最低得分">
-          <el-input-number v-model="form.minScore" :min="0" :max="100" :step="5" />
-        </el-form-item>
-        <el-form-item label="技术面权重">
-          <el-input-number v-model="form.techWeight" :min="0" :max="1" :step="0.1" :precision="1" />
-        </el-form-item>
-        <el-form-item label="基本面权重">
-          <el-input-number v-model="form.fundWeight" :min="0" :max="1" :step="0.1" :precision="1" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleRun" :loading="loading">开始选股</el-button>
-          <el-button type="danger" @click="handleStop" :disabled="!loading">停止选股</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+        <div class="controls">
+          <el-form :inline="true" :model="form" class="control-form">
+            <el-form-item label="返回数量">
+              <el-input-number v-model="form.top" :min="1" :max="100" />
+            </el-form-item>
+            <el-form-item label="最低得分">
+              <el-input-number v-model="form.minScore" :min="0" :max="100" :step="5" />
+            </el-form-item>
+            <el-form-item label="技术面权重">
+              <el-input-number v-model="form.techWeight" :min="0" :max="1" :step="0.1" :precision="1" />
+            </el-form-item>
+            <el-form-item label="基本面权重">
+              <el-input-number v-model="form.fundWeight" :min="0" :max="1" :step="0.1" :precision="1" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleRun" :loading="loading">开始选股</el-button>
+              <el-button type="danger" @click="handleStop" :disabled="!loading">停止选股</el-button>
+              <el-button v-if="!isMobile" type="success" @click="currentView = 'analysis'">个股分析</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
 
-    <!-- <el-alert v-if="message" :title="message" :type="messageType" show-icon :closable="false" class="alert" /> -->
-    
-    <el-alert v-if="message" :title="message" :type="messageType" show-icon :closable="false" class="alert" />
+      <el-alert v-if="message" :title="message" :type="messageType" show-icon :closable="false" class="alert" />
 
-    <div v-if="loading" class="loading">
-      <el-icon class="is-loading"><Loading /></el-icon>
-      <p>正在分析 A 股市场，请稍候...</p>
-    </div>
-
-    <div v-else-if="stocks.length > 0" class="results">
-      <div class="results-header">
-        <h2>选股结果</h2>
-        <span class="timestamp">更新时间: {{ timestamp }}</span>
+      <div v-if="loading" class="loading">
+        <el-icon class="is-loading"><Loading /></el-icon>
+        <p>正在分析 A 股市场，请稍候...</p>
       </div>
 
-      <div class="summary">
-        <div class="summary-card">
-          <div class="label">选出股票</div>
-          <div class="value">{{ stocks.length }} 只</div>
+      <div v-else-if="stocks.length > 0" class="results">
+        <div class="results-header">
+          <h2>选股结果</h2>
+          <span class="timestamp">更新时间: {{ timestamp }}</span>
         </div>
-        <div class="summary-card">
-          <div class="label">平均涨幅</div>
-          <div class="value">{{ avgChange }}%</div>
-        </div>
-        <div class="summary-card">
-          <div class="label">最高涨幅</div>
-          <div class="value">{{ maxChange }}%</div>
-        </div>
-        <div class="summary-card">
-          <div class="label">平均综合分</div>
-          <div class="value">{{ avgScore }}</div>
-        </div>
-      </div>
 
-      <div class="content-wrapper">
-        <el-table :data="stocks" stripe class="stock-table" :cell-class-name="getCellClass">
-          <el-table-column prop="index" label="排名" min-width="70">
-            <template #default="{ $index }">
-              <span class="rank" :class="{ 'top-3': $index < 3 }">{{ $index + 1 }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="code" label="代码" min-width="120" />
-          <el-table-column prop="name" label="名称" min-width="100" />
-          <el-table-column label="价格" min-width="100">
-            <template #default="{ row }">
-              ¥{{ row.price?.toFixed(2) || '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="涨跌幅" min-width="100">
-            <template #default="{ row }">
-              <span :class="row.pct_change >= 0 ? 'pct-up' : 'pct-down'">
-                {{ formatPct(row.pct_change) }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="投资建议" min-width="100">
-            <template #default="{ row }">
-              <el-tag :type="getRecommendationType(row.recommendation)">{{ row.recommendation || '-' }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="交易信号" min-width="180">
-            <template #default="{ row }">
-              <div v-if="row.signals && row.signals.length" class="signals-cell">
-                <el-tag 
-                  v-for="(sig, idx) in row.signals.slice(0, 3)" 
-                  :key="idx" 
-                  :type="getSignalType(sig.type)" 
-                  size="small" 
-                  class="signal-tag"
-                >
-                  {{ sig.signal }}
-                </el-tag>
-              </div>
-              <span v-else>-</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="pe" label="市盈率" min-width="90">
-            <template #default="{ row }">
-              {{ row.pe ? row.pe.toFixed(2) : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="pb" label="市净率" min-width="90">
-            <template #default="{ row }">
-              {{ row.pb ? row.pb.toFixed(2) : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="市值(亿)" min-width="90">
-            <template #default="{ row }">
-              {{ formatMarketCap(row.market_cap) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="换手率" min-width="80">
-            <template #default="{ row }">
-              {{ row.turnover_rate ? row.turnover_rate.toFixed(2) + '%' : '-' }}
-            </template>
-          </el-table-column>
-          <el-table-column label="技术分" min-width="90">
-            <template #default="{ row }">
-              <el-tag :type="getScoreType(row.tech_score)">{{ row.tech_score }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="基本分" min-width="90">
-            <template #default="{ row }">
-              <el-tag :type="getScoreType(row.fund_score)">{{ row.fund_score }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="综合分" min-width="90">
-            <template #default="{ row }">
-              <el-tag type="primary">{{ row.total_score }}</el-tag>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <div class="card-list">
-          <div v-for="(stock, index) in stocks" :key="stock.code" class="stock-card">
-            <div class="stock-card-header">
-              <div class="stock-card-left">
-                <span class="rank" :class="{ 'top-3': index < 3 }">{{ index + 1 }}</span>
-                <div>
-                  <div class="stock-card-code">{{ stock.code }}</div>
-                  <div class="stock-card-name">{{ stock.name }}</div>
-                </div>
-              </div>
-              <div style="text-align: right">
-                <div class="stock-card-price">¥{{ stock.price?.toFixed(2) || '-' }}</div>
-                <div class="stock-card-pct" :class="stock.pct_change >= 0 ? 'pct-up' : 'pct-down'">
-                  {{ formatPct(stock.pct_change) }}
-                </div>
-              </div>
-            </div>
-            <div class="stock-card-detail">
-              <div class="stock-card-item">
-                <div class="label">市盈率</div>
-                <div class="val">{{ stock.pe ? stock.pe.toFixed(2) : '-' }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">市净率</div>
-                <div class="val">{{ stock.pb ? stock.pb.toFixed(2) : '-' }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">市值(亿)</div>
-                <div class="val">{{ formatMarketCap(stock.market_cap) }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">换手率</div>
-                <div class="val">{{ stock.turnover_rate ? stock.turnover_rate.toFixed(2) + '%' : '-' }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">收益率</div>
-                <div class="val">{{ formatPct(stock.pct_change) }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">流动性</div>
-                <div class="val">{{ stock.turnover_rate ? stock.turnover_rate.toFixed(1) : '-' }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">技术分</div>
-                <div class="val">{{ stock.tech_score }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">基本面</div>
-                <div class="val">{{ stock.fund_score }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">综合分</div>
-                <div class="val" style="color: #667eea">{{ stock.total_score }}</div>
-              </div>
-              <div class="stock-card-item">
-                <div class="label">建议</div>
-                <el-tag :type="getRecommendationType(stock.recommendation)" size="small">{{ stock.recommendation || '-' }}</el-tag>
-              </div>
-              <div v-if="stock.signals && stock.signals.length" class="stock-card-item signals-card-item">
-                <div class="label">信号</div>
-                <div class="signals-card">
-                  <el-tag 
-                    v-for="(sig, idx) in stock.signals.slice(0, 3)" 
-                    :key="idx" 
-                    :type="getSignalType(sig.type)" 
-                    size="small"
-                  >
-                    {{ sig.signal }}
-                  </el-tag>
-                </div>
-              </div>
-            </div>
+        <div class="summary">
+          <div class="summary-card">
+            <div class="label">选出股票</div>
+            <div class="value">{{ stocks.length }} 只</div>
+          </div>
+          <div class="summary-card">
+            <div class="label">平均涨幅</div>
+            <div class="value">{{ avgChange }}%</div>
+          </div>
+          <div class="summary-card">
+            <div class="label">最高涨幅</div>
+            <div class="value">{{ maxChange }}%</div>
+          </div>
+          <div class="summary-card">
+            <div class="label">平均综合分</div>
+            <div class="value">{{ avgScore }}</div>
           </div>
         </div>
+
+        <PcResults v-if="!isMobile" :stocks="stocks" @analyze="goToAnalysis" />
+        <MobileResults v-else :stocks="stocks" />
       </div>
-    </div>
 
-    <div v-else class="empty">
-      <p>点击"开始选股"运行分析</p>
-    </div>
+      <div v-else class="empty">
+        <p>点击"开始选股"运行分析</p>
+      </div>
 
-    <div class="footer">
-      <p>评分标准：根据估值、盈利能力、成长性、流动性，去掉 ST / *ST / 退市、涨停/跌停、价格 > 1 元、成交额 > 1000万；计分权重：技术分 0.6，基本面 0.4</p>
-      <p>提示：智能选股仅供学习、参考，请勿用于实盘交易</p>
-    </div>
+      <div class="footer">
+        <p>评分标准：根据估值、盈利能力、成长性、流动性，去掉 ST / *ST / 退市、涨停/跌停、价格 > 1 元、成交额 > 1000万；计分权重：技术分 0.6，基本面 0.4</p>
+        <p>提示：智能选股仅供学习、参考，请勿用于实盘交易</p>
+      </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Loading } from '@element-plus/icons-vue'
 import { fetchStockData, runSelection, fetchFromJson, stopSelection, getStatus, getResult } from './api/index.js'
+import PcResults from './components/PcResults.vue'
+import MobileResults from './components/MobileResults.vue'
+import StockAnalysis from './components/StockAnalysis.vue'
+
+const currentView = ref('selection')
+const stockCode = ref('')
 
 const form = ref({
   top: 10,
@@ -252,6 +110,7 @@ const stocks = ref([])
 const timestamp = ref('')
 const message = ref('')
 const messageType = ref('info')
+const isMobile = ref(window.innerWidth <= 768)
 let pollInterval = null
 
 const avgChange = computed(() => {
@@ -272,40 +131,13 @@ const avgScore = computed(() => {
   return (sum / stocks.value.length).toFixed(1)
 })
 
-function formatPct(val) {
-  if (!val && val !== 0) return '-'
-  const sign = val > 0 ? '+' : ''
-  return `${sign}${val.toFixed(2)}%`
+function handleResize() {
+  isMobile.value = window.innerWidth <= 768
 }
 
-function formatMarketCap(val) {
-  if (!val || val === 0) return '-'
-  return (val / 1e8).toFixed(1)
-}
-
-function getScoreType(score) {
-  if (score >= 70) return 'success'
-  if (score >= 50) return 'warning'
-  return 'danger'
-}
-
-function getRecommendationType(rec) {
-  if (rec === '强烈推荐') return 'success'
-  if (rec === '推荐') return 'primary'
-  if (rec === '中性') return 'info'
-  if (rec === '观望') return 'warning'
-  return 'danger'
-}
-
-function getSignalType(type) {
-  if (type === 'bullish') return 'success'
-  if (type === 'bearish') return 'danger'
-  return 'info'
-}
-
-function getCellClass({ columnIndex }) {
-  if (columnIndex === 4) return 'pct-cell'
-  return ''
+function goToAnalysis(code) {
+  stockCode.value = code.replace('.SH', '').replace('.SZ', '')
+  currentView.value = 'analysis'
 }
 
 async function loadData() {
@@ -343,7 +175,6 @@ async function handleRun() {
       return
     }
     
-    // 轮询等待结果
     pollInterval = setInterval(async () => {
       const result = await getResult()
       if (result.done) {
@@ -386,6 +217,14 @@ async function handleStop() {
 
 onMounted(() => {
   loadData()
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  if (pollInterval) {
+    clearInterval(pollInterval)
+  }
 })
 </script>
 
@@ -411,7 +250,7 @@ body {
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   overflow: hidden;
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 40px);
 }
 
 .page-loading {
@@ -461,11 +300,6 @@ body {
   color: white;
   padding: 30px;
   text-align: center;
-}
-
-.header h1 {
-  font-size: 32px;
-  margin-bottom: 8px;
 }
 
 .header p {
@@ -556,59 +390,6 @@ body {
   color: #667eea;
 }
 
-.stock-table {
-  min-width: 100%;
-}
-
-.stock-table .pct-cell {
-  font-weight: 600;
-}
-
-.signals-cell {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.signal-tag {
-  margin: 2px;
-}
-
-.signals-card {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.signals-card-item {
-  flex-basis: 100%;
-}
-
-.pct-up {
-  color: #dc3545;
-}
-
-.pct-down {
-  color: #28a745;
-}
-
-.rank {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 50%;
-  font-weight: bold;
-  font-size: 12px;
-}
-
-.rank.top-3 {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
 .empty {
   text-align: center;
   padding: 60px;
@@ -633,21 +414,16 @@ body {
   font-weight: 600;
 }
 
-.card-list {
-  display: none;
-}
-
 @media (max-width: 768px) {
   body {
     padding: 10px;
   }
 
-  .header h1 {
-    font-size: 20px;
+  .header {
+    padding: 20px;
   }
 
   .controls {
-    padding: 15px;
     display: none;
   }
 
@@ -660,14 +436,6 @@ body {
     margin-bottom: 10px;
   }
 
-  .stock-table {
-    display: none;
-  }
-
-  .card-list {
-    display: block;
-  }
-
   .summary {
     grid-template-columns: repeat(2, 1fr);
     padding: 15px;
@@ -678,66 +446,5 @@ body {
     align-items: flex-start;
     gap: 10px;
   }
-}
-
-.stock-card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.stock-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.stock-card-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.stock-card-code {
-  font-size: 13px;
-  color: #6c757d;
-}
-
-.stock-card-name {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.stock-card-price {
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.stock-card-pct {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.stock-card-detail {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  font-size: 12px;
-}
-
-.stock-card-item {
-  text-align: center;
-}
-
-.stock-card-item .label {
-  color: #6c757d;
-  margin-bottom: 2px;
-}
-
-.stock-card-item .val {
-  font-weight: 600;
 }
 </style>
