@@ -1,14 +1,70 @@
 {
   "data": [
     {
+      "code": "603296.SH",
+      "name": "华勤技术",
+      "price": 98.8,
+      "pct_change": -0.25,
+      "pe": 24.75,
+      "pb": 3.89,
+      "market_cap": 100354355587,
+      "turnover_rate": 2.91,
+      "tech_score": 59,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 3,
+      "fund_score": 55,
+      "fund_valuation": 15,
+      "fund_profit": 0,
+      "fund_growth": 20,
+      "fund_liquidity": 20,
+      "total_score": 58.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "002648.SZ",
+      "name": "卫星化学",
+      "price": 28.83,
+      "pct_change": -0.03,
+      "pe": 18.29,
+      "pb": 2.89,
+      "market_cap": 97118055243,
+      "turnover_rate": 1.18,
+      "tech_score": 55,
+      "tech_trend": 23,
+      "tech_momentum": 19,
+      "tech_volume": 3,
+      "fund_score": 55,
+      "fund_valuation": 15,
+      "fund_profit": 0,
+      "fund_growth": 20,
+      "fund_liquidity": 20,
+      "total_score": 55.0,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
       "code": "002176.SZ",
       "name": "江特电机",
       "price": 10.74,
-      "pct_change": 2.3832221163012393,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
+      "pct_change": 2.38,
+      "pe": -121.73,
+      "pb": 5.4,
+      "market_cap": 18325936740,
+      "turnover_rate": 10.08,
       "tech_score": 62,
       "tech_trend": 20,
       "tech_momentum": 23,
@@ -26,111 +82,27 @@
           "desc": "短中长期均线呈多头排列"
         }
       ],
-      "recommendation": "中性"
-    },
-    {
-      "code": "603296.SH",
-      "name": "华勤技术",
-      "price": 98.8,
-      "pct_change": -0.2523977788995457,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 59,
-      "tech_trend": 23,
-      "tech_momentum": 23,
-      "tech_volume": 3,
-      "fund_score": 10,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 49.2,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "002428.SZ",
-      "name": "云南锗业",
-      "price": 56.79,
-      "pct_change": 2.1586616297895227,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 57,
-      "tech_trend": 23,
-      "tech_momentum": 23,
-      "tech_volume": 6,
-      "fund_score": 10,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 47.6,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "003031.SZ",
-      "name": "中瓷电子",
-      "price": 95.98,
-      "pct_change": -0.5079299264019849,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 57,
-      "tech_trend": 23,
-      "tech_momentum": 23,
-      "tech_volume": 6,
-      "fund_score": 10,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 47.6,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        }
-      ],
       "recommendation": "观望"
     },
     {
       "code": "600641.SH",
       "name": "先导基电",
       "price": 22.08,
-      "pct_change": 4.843304843304842,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
+      "pct_change": 4.84,
+      "pe": -162.31,
+      "pb": 2.52,
+      "market_cap": 20548308634,
+      "turnover_rate": 8.09,
       "tech_score": 57,
       "tech_trend": 23,
       "tech_momentum": 23,
       "tech_volume": 6,
-      "fund_score": 10,
-      "fund_valuation": 0,
+      "fund_score": 29,
+      "fund_valuation": 5,
       "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 47.6,
+      "fund_growth": 16,
+      "fund_liquidity": 8,
+      "total_score": 51.4,
       "signals": [
         {
           "type": "bullish",
@@ -146,24 +118,85 @@
       "recommendation": "观望"
     },
     {
-      "code": "603929.SH",
-      "name": "亚翔集成",
-      "price": 210.5,
-      "pct_change": 5.7842102618221976,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
+      "code": "300408.SZ",
+      "name": "三环集团",
+      "price": 59.62,
+      "pct_change": 1.78,
+      "pe": 43.64,
+      "pb": 5.28,
+      "market_cap": 114261573259,
+      "turnover_rate": 1.67,
+      "tech_score": 54,
+      "tech_trend": 20,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 40,
+      "fund_valuation": 0,
+      "fund_profit": 0,
+      "fund_growth": 20,
+      "fund_liquidity": 20,
+      "total_score": 51.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "003031.SZ",
+      "name": "中瓷电子",
+      "price": 95.98,
+      "pct_change": -0.51,
+      "pe": 73.25,
+      "pb": 6.88,
+      "market_cap": 43292053407,
+      "turnover_rate": 4.78,
       "tech_score": 57,
       "tech_trend": 23,
       "tech_momentum": 23,
       "tech_volume": 6,
-      "fund_score": 7,
+      "fund_score": 28,
       "fund_valuation": 0,
       "fund_profit": 0,
-      "fund_growth": 7,
-      "fund_liquidity": 0,
-      "total_score": 47.0,
+      "fund_growth": 16,
+      "fund_liquidity": 12,
+      "total_score": 51.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "603929.SH",
+      "name": "亚翔集成",
+      "price": 210.5,
+      "pct_change": 5.78,
+      "pe": 50.34,
+      "pb": 19.49,
+      "market_cap": 44912280000,
+      "turnover_rate": 4.1,
+      "tech_score": 57,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 25,
+      "fund_valuation": 0,
+      "fund_profit": 0,
+      "fund_growth": 13,
+      "fund_liquidity": 12,
+      "total_score": 50.6,
       "signals": [
         {
           "type": "bullish",
@@ -179,62 +212,29 @@
       "recommendation": "观望"
     },
     {
-      "code": "002648.SZ",
-      "name": "卫星化学",
-      "price": 28.83,
-      "pct_change": -0.03467406380028282,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 55,
-      "tech_trend": 23,
-      "tech_momentum": 19,
-      "tech_volume": 3,
-      "fund_score": 10,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 46.0,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "301526.SZ",
-      "name": "国际复材",
-      "price": 12.78,
-      "pct_change": 2.076677316293928,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 55,
-      "tech_trend": 23,
+      "code": "601677.SH",
+      "name": "明泰铝业",
+      "price": 17.21,
+      "pct_change": -2.55,
+      "pe": 10.83,
+      "pb": 1.12,
+      "market_cap": 21401041621,
+      "turnover_rate": 6.86,
+      "tech_score": 52,
+      "tech_trend": 16,
       "tech_momentum": 23,
-      "tech_volume": 9,
-      "fund_score": 10,
-      "fund_valuation": 0,
+      "tech_volume": 3,
+      "fund_score": 44,
+      "fund_valuation": 30,
       "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 46.0,
+      "fund_growth": 6,
+      "fund_liquidity": 8,
+      "total_score": 50.4,
       "signals": [
         {
           "type": "bullish",
           "signal": "多头排列",
           "desc": "短中长期均线呈多头排列"
-        },
-        {
-          "type": "bearish",
-          "signal": "触及上轨",
-          "desc": "价格触及布林带上轨，可能回调"
         },
         {
           "type": "neutral",
@@ -245,24 +245,24 @@
       "recommendation": "观望"
     },
     {
-      "code": "301217.SZ",
-      "name": "铜冠铜箔",
-      "price": 42.45,
-      "pct_change": -1.3937282229965025,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
+      "code": "301200.SZ",
+      "name": "大族数控",
+      "price": 181.82,
+      "pct_change": -0.59,
+      "pe": 106.66,
+      "pb": 12.74,
+      "market_cap": 87915179507,
+      "turnover_rate": 1.43,
       "tech_score": 54,
       "tech_trend": 23,
       "tech_momentum": 23,
       "tech_volume": 3,
-      "fund_score": 10,
-      "fund_valuation": 0,
+      "fund_score": 35,
+      "fund_valuation": -5,
       "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 45.2,
+      "fund_growth": 20,
+      "fund_liquidity": 20,
+      "total_score": 50.2,
       "signals": [
         {
           "type": "bullish",
@@ -273,33 +273,38 @@
       "recommendation": "观望"
     },
     {
-      "code": "688048.SH",
-      "name": "长光华芯",
-      "price": 239.39,
-      "pct_change": 4.05998695935665,
-      "pe": 0,
-      "pb": 0,
-      "market_cap": 0,
-      "turnover_rate": 0,
-      "tech_score": 54,
+      "code": "600988.SH",
+      "name": "赤峰黄金",
+      "price": 45.08,
+      "pct_change": -1.68,
+      "pe": 27.79,
+      "pb": 6.39,
+      "market_cap": 85670535904,
+      "turnover_rate": 2.3,
+      "tech_score": 51,
       "tech_trend": 23,
       "tech_momentum": 20,
-      "tech_volume": 6,
-      "fund_score": 10,
-      "fund_valuation": 0,
+      "tech_volume": 3,
+      "fund_score": 45,
+      "fund_valuation": 5,
       "fund_profit": 0,
-      "fund_growth": 10,
-      "fund_liquidity": 0,
-      "total_score": 45.2,
+      "fund_growth": 20,
+      "fund_liquidity": 20,
+      "total_score": 49.8,
       "signals": [
         {
           "type": "bullish",
           "signal": "多头排列",
           "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "KDJ超买",
+          "desc": "KDJ指标处于超买区域"
         }
       ],
       "recommendation": "观望"
     }
   ],
-  "timestamp": "2026-04-10 16:41:52"
+  "timestamp": "2026-04-10 17:46:52"
 }
