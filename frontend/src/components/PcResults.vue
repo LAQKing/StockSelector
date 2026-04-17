@@ -8,12 +8,12 @@
       </el-table-column>
       <el-table-column prop="code" label="代码" min-width="120" />
       <el-table-column prop="name" label="名称" min-width="100" />
-      <el-table-column label="价格" min-width="100">
+      <el-table-column label="价格" min-width="80">
         <template #default="{ row }">
           ¥{{ row.price?.toFixed(2) || '-' }}
         </template>
       </el-table-column>
-      <el-table-column label="涨跌幅" min-width="100">
+      <el-table-column label="涨跌幅" min-width="80">
         <template #default="{ row }">
           <span :class="row.pct_change >= 0 ? 'pct-up' : 'pct-down'">
             {{ formatPct(row.pct_change) }}
@@ -25,7 +25,7 @@
           <el-tag :type="getRecommendationType(row.recommendation)">{{ row.recommendation || '-' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="交易信号" min-width="180">
+      <el-table-column label="交易信号" min-width="120">
         <template #default="{ row }">
           <div v-if="row.signals && row.signals.length" class="signals-cell">
             <span v-for="(sig, idx) in row.signals.slice(0, 3)" :key="idx" >
@@ -43,39 +43,40 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column prop="pe" label="市盈率" min-width="90">
-        <template #default="{ row }">
-          {{ row.pe && row.pe > 0 ? row.pe.toFixed(2) : '-' }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="pb" label="市净率" min-width="90">
-        <template #default="{ row }">
-          {{ row.pb && row.pb > 0 ? row.pb.toFixed(2) : '-' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="市值(亿)" min-width="90">
-        <template #default="{ row }">
-          {{ row.market_cap && row.market_cap > 0 ? formatMarketCap(row.market_cap) : '-' }}
-        </template>
-      </el-table-column>
+      
       <el-table-column label="换手率" min-width="80">
         <template #default="{ row }">
           {{ row.turnover_rate && row.turnover_rate > 0 ? row.turnover_rate.toFixed(2) + '%' : '-' }}
         </template>
       </el-table-column>
-      <el-table-column label="技术分" min-width="90">
+      <el-table-column label="技术分" min-width="80">
         <template #default="{ row }">
           <el-tag :type="getScoreType(row.tech_score)">{{ row.tech_score }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="基本分" min-width="90">
+      <el-table-column label="基本分" min-width="80">
         <template #default="{ row }">
           <el-tag :type="getScoreType(row.fund_score)">{{ row.fund_score }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="综合分" min-width="90">
+      <el-table-column label="综合分" min-width="80">
         <template #default="{ row }">
           <el-tag type="primary">{{ row.total_score }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="pe" label="市盈率" min-width="80">
+        <template #default="{ row }">
+          {{ row.pe && row.pe > 0 ? row.pe.toFixed(2) : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="pb" label="市净率" min-width="80">
+        <template #default="{ row }">
+          {{ row.pb && row.pb > 0 ? row.pb.toFixed(2) : '-' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="市值(亿)" min-width="80">
+        <template #default="{ row }">
+          {{ row.market_cap && row.market_cap > 0 ? formatMarketCap(row.market_cap) : '-' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="100" fixed="right">

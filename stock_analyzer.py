@@ -28,68 +28,74 @@ def _safe_float(v):
 
 def get_fund_flow(code: str) -> dict:
     """获取个股资金流向"""
-    try:
-        market = "sh" if code.startswith("6") else "sz"
-        df = ak.stock_individual_fund_flow(stock=code, market=market)
-        if df is None or df.empty:
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            market = "sh" if code.startswith("6") else "sz"
+            df = ak.stock_individual_fund_flow(stock=code, market=market)
+            if df is None or df.empty:
+                return {}
+            
+            recent = df.head(5)
+            main_net = 0
+            super_net = 0
+            large_net = 0
+            mid_net = 0
+            small_net = 0
+            
+            for _, row in recent.iterrows():
+                main_net += _safe_float(row.get("主力净流入-净额", 0))
+                super_net += _safe_float(row.get("超大单净流入-净额", 0))
+                large_net += _safe_float(row.get("大单净流入-净额", 0))
+                mid_net += _safe_float(row.get("中单净流入-净额", 0))
+                small_net += _safe_float(row.get("小单净流入-净额", 0))
+            
+            return {
+                "main_net": main_net,
+                "super_net": super_net,
+                "large_net": large_net,
+                "mid_net": mid_net,
+                "small_net": small_net,
+                "days": len(recent),
+            }
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(1)
+                continue
+            print(f"[WARN] 获取资金流向失败: {e}")
             return {}
-        
-        # 取最近5日数据
-        recent = df.head(5)
-        main_net = 0
-        super_net = 0
-        large_net = 0
-        mid_net = 0
-        small_net = 0
-        
-        for _, row in recent.iterrows():
-            main_net += _safe_float(row.get("主力净流入-净额", 0))
-            super_net += _safe_float(row.get("超大单净流入-净额", 0))
-            large_net += _safe_float(row.get("大单净流入-净额", 0))
-            mid_net += _safe_float(row.get("中单净流入-净额", 0))
-            small_net += _safe_float(row.get("小单净流入-净额", 0))
-        
-        return {
-            "main_net": main_net,
-            "super_net": super_net,
-            "large_net": large_net,
-            "mid_net": mid_net,
-            "small_net": small_net,
-            "days": len(recent),
-        }
-    except Exception as e:
-        print(f"[WARN] 获取资金流向失败: {e}")
-        return {}
 
 
 def get_sector_heat(code: str) -> dict:
     """获取板块热度"""
-    try:
-        # 获取行业资金流
-        df = ak.stock_sector_fund_flow_rank(indicator="今日", sector_type="行业资金流")
-        if df is None or df.empty:
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            df = ak.stock_sector_fund_flow_rank(indicator="今日", sector_type="行业资金流")
+            if df is None or df.empty:
+                return {}
+            
+            sector_name = ""
+            net_inflow = 0
+            rank = 0
+            
+            for idx, row in df.head(20).iterrows():
+                rank += 1
+                sector_name = row.get("名称", "")
+                net_inflow = _safe_float(row.get("主力净流入-净额", 0))
+                break
+            
+            return {
+                "top_sector": sector_name,
+                "top_inflow": net_inflow,
+                "rank": rank,
+            }
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(1)
+                continue
+            print(f"[WARN] 获取板块热度失败: {e}")
             return {}
-        
-        # 从板块名称匹配（简化版）
-        sector_name = ""
-        net_inflow = 0
-        rank = 0
-        
-        # 取前20个板块
-        for idx, row in df.head(20).iterrows():
-            rank += 1
-            sector_name = row.get("名称", "")
-            net_inflow = _safe_float(row.get("主力净流入-净额", 0))
-            break  # 返回第一个（今日资金流入最高）
-        
-        return {
-            "top_sector": sector_name,
-            "top_inflow": net_inflow,
-            "rank": rank,
-        }
-    except Exception as e:
-        print(f"[WARN] 获取板块热度失败: {e}")
-        return {}
 
 
 def predict_trend(hist: pd.DataFrame) -> dict:
@@ -204,23 +210,35 @@ def analyze_stock(code: str) -> dict:
     try:
         time.sleep(0.5)  # 避免API调用过于频繁
         
+        # 获取实时行情（优先使用，包含最新价格和涨跌幅）
+        realtime_data = get_stock_realtime(code)
+        time.sleep(0.2)
+        
         # 1. 获取历史数据
         hist = get_daily_history(code, days=120)
         if hist.empty or len(hist) < 60:
             result["error"] = "历史数据不足"
             return result
 
-        # 2. 基本信息
+        # 2. 基本信息（优先使用实时数据，其次使用历史数据）
         latest = hist.iloc[-1]
         prev_close = _safe_float(hist.iloc[-2]["close"])
-        current_close = _safe_float(latest["close"])
+        
+        # 优先使用实时行情数据
+        if realtime_data and realtime_data.get("price"):
+            current_price = realtime_data["price"]
+            pct_change = realtime_data.get("pct_change", 0)
+        else:
+            current_price = _safe_float(latest["close"])
+            pct_change = ((current_price - prev_close) / prev_close * 100) if prev_close != 0 else 0
+        
         result["basic_info"] = {
-            "price": current_close,
-            "change": current_close - prev_close,
-            "pct_change": ((current_close - prev_close) / prev_close * 100) if prev_close != 0 else 0,
+            "price": current_price,
+            "change": _safe_float(realtime_data.get("change")) if realtime_data else (current_price - prev_close),
+            "pct_change": pct_change,
             "volume": int(_safe_float(latest["volume"])),
             "turnover": _safe_float(latest["turnover"]),
-            "turnover_rate": _safe_float(latest.get("turnover_rate", 0)),
+            "turnover_rate": _safe_float(realtime_data.get("turnover_rate", 0)) if realtime_data else _safe_float(latest.get("turnover_rate", 0)),
             "high_52w": _safe_float(hist["high"].tail(250).max() if len(hist) >= 250 else hist["high"].max()),
             "low_52w": _safe_float(hist["low"].tail(250).min() if len(hist) >= 250 else hist["low"].max()),
         }
@@ -255,17 +273,13 @@ def analyze_stock(code: str) -> dict:
         time.sleep(0.2)
         financial_detail = get_financial_detail(code)
         
-        # 获取实时行情（包含PE/PB/市值等）
-        time.sleep(0.2)
-        realtime_data = get_stock_realtime(code)
-        
-        # 构建完整的 realtime_dict 用于基本面评分
+        # 构建完整的 realtime_dict 用于基本面评分（realtime_data 已在前面获取）
         realtime_dict = {
             "pe": _safe_float(realtime_data.get("pe", 0)),
             "pb": _safe_float(realtime_data.get("pb", 0)),
             "market_cap": _safe_float(realtime_data.get("market_cap", 0)),
-            "turnover_rate": _safe_float(result["basic_info"].get("turnover_rate", 0)),
-            "pct_change": _safe_float(result["basic_info"].get("pct_change", 0)),
+            "turnover_rate": _safe_float(realtime_data.get("turnover_rate", 0)) if realtime_data else 0,
+            "pct_change": _safe_float(realtime_data.get("pct_change", 0)) if realtime_data else 0,
         }
         fund_score = score_fundamental(realtime_dict, financial)
         

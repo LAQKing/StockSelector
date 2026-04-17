@@ -427,7 +427,7 @@ def get_stock_realtime(code: str) -> dict:
     """
     获取单只股票实时行情
     :param code: 股票代码
-    :return: dict，含 pe/pb/market_cap/turnover_rate 等
+    :return: dict，含 price/pct_change/pe/pb/market_cap/turnover_rate 等
     """
     try:
         headers = {
@@ -443,6 +443,9 @@ def get_stock_realtime(code: str) -> dict:
             if data.get("data") and data["data"].get("diff"):
                 item = data["data"]["diff"][0]
                 return {
+                    "price": _safe_float(item.get("f2")),
+                    "pct_change": _safe_float(item.get("f3")),
+                    "change": _safe_float(item.get("f4")),
                     "pe": _safe_float(item.get("f9")),
                     "pb": _safe_float(item.get("f23")),
                     "market_cap": _safe_float(item.get("f20")),
