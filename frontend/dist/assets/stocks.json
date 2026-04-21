@@ -1,24 +1,62 @@
 {
   "data": [
     {
-      "code": "300207.SZ",
-      "name": "欣旺达",
-      "price": 29.04,
-      "pct_change": -1.19,
-      "pe": 28.63,
-      "pb": 2.15,
-      "market_cap": 53650309432,
-      "turnover_rate": 4.29,
-      "tech_score": 59,
+      "code": "601002.SH",
+      "name": "晋亿实业",
+      "price": 6.61,
+      "pct_change": -1.05,
+      "pe": 26.05,
+      "pb": 1.46,
+      "market_cap": 6308853159,
+      "turnover_rate": 1.76,
+      "tech_score": 60,
       "tech_trend": 23,
-      "tech_momentum": 20,
-      "tech_volume": 6,
-      "fund_score": 55,
-      "fund_valuation": 15,
+      "tech_momentum": 23,
+      "tech_volume": 9,
+      "fund_score": 42,
+      "fund_valuation": 20,
       "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 58.2,
+      "fund_growth": 10,
+      "fund_liquidity": 12,
+      "total_score": 56.4,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "600410.SH",
+      "name": "华胜天成",
+      "price": 28.65,
+      "pct_change": -1.17,
+      "pe": 65.75,
+      "pb": 6.62,
+      "market_cap": 31414572668,
+      "turnover_rate": 1.76,
+      "tech_score": 62,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 28,
+      "fund_valuation": 0,
+      "fund_profit": 0,
+      "fund_growth": 16,
+      "fund_liquidity": 12,
+      "total_score": 55.2,
       "signals": [
         {
           "type": "bullish",
@@ -29,24 +67,95 @@
       "recommendation": "观望"
     },
     {
-      "code": "000938.SZ",
-      "name": "紫光股份",
-      "price": 28.41,
-      "pct_change": 2.56,
-      "pe": 48.21,
-      "pb": 5.51,
-      "market_cap": 81254869220,
-      "turnover_rate": 4.76,
+      "code": "300184.SZ",
+      "name": "力源信息",
+      "price": 12.8,
+      "pct_change": -1.16,
+      "pe": 26.82,
+      "pb": 3.5,
+      "market_cap": 14733211162,
+      "turnover_rate": 1.88,
+      "tech_score": 60,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 9,
+      "fund_score": 32,
+      "fund_valuation": 10,
+      "fund_profit": 0,
+      "fund_growth": 10,
+      "fund_liquidity": 12,
+      "total_score": 54.4,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "KDJ超买",
+          "desc": "KDJ指标处于超买区域"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "300207.SZ",
+      "name": "欣旺达",
+      "price": 28.75,
+      "pct_change": -1.0,
+      "pe": 28.34,
+      "pb": 2.13,
+      "market_cap": 53114545323,
+      "turnover_rate": 0.24,
+      "tech_score": 59,
+      "tech_trend": 23,
+      "tech_momentum": 20,
+      "tech_volume": 6,
+      "fund_score": 35,
+      "fund_valuation": 15,
+      "fund_profit": 0,
+      "fund_growth": 20,
+      "fund_liquidity": 0,
+      "total_score": 54.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "002261.SZ",
+      "name": "拓维信息",
+      "price": 36.57,
+      "pct_change": -2.92,
+      "pe": 329.56,
+      "pb": 17.67,
+      "market_cap": 46072037004,
+      "turnover_rate": 1.04,
       "tech_score": 62,
       "tech_trend": 23,
       "tech_momentum": 23,
       "tech_volume": 6,
-      "fund_score": 40,
-      "fund_valuation": 0,
+      "fund_score": 13,
+      "fund_valuation": -5,
       "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 57.6,
+      "fund_growth": 6,
+      "fund_liquidity": 12,
+      "total_score": 52.2,
       "signals": [
         {
           "type": "bullish",
@@ -59,22 +168,22 @@
     {
       "code": "002812.SZ",
       "name": "恩捷股份",
-      "price": 72.15,
-      "pct_change": 0.67,
-      "pe": -615.66,
-      "pb": 2.82,
-      "market_cap": 70860816369,
-      "turnover_rate": 3.81,
+      "price": 71.25,
+      "pct_change": -1.25,
+      "pe": -607.98,
+      "pb": 2.79,
+      "market_cap": 69976897661,
+      "turnover_rate": 0.25,
       "tech_score": 59,
       "tech_trend": 23,
       "tech_momentum": 23,
       "tech_volume": 3,
-      "fund_score": 45,
+      "fund_score": 25,
       "fund_valuation": 5,
       "fund_profit": 0,
       "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 56.2,
+      "fund_liquidity": 0,
+      "total_score": 52.2,
       "signals": [
         {
           "type": "bullish",
@@ -85,136 +194,128 @@
       "recommendation": "观望"
     },
     {
-      "code": "002028.SZ",
-      "name": "思源电气",
-      "price": 217.82,
-      "pct_change": 1.88,
-      "pe": 54.1,
-      "pb": 10.99,
-      "market_cap": 170433516463,
-      "turnover_rate": 2.86,
-      "tech_score": 59,
-      "tech_trend": 20,
+      "code": "603077.SH",
+      "name": "和邦生物",
+      "price": 3.01,
+      "pct_change": -7.67,
+      "pe": 38.28,
+      "pb": 1.5,
+      "market_cap": 26583334911,
+      "turnover_rate": 1.53,
+      "tech_score": 57,
+      "tech_trend": 23,
       "tech_momentum": 23,
       "tech_volume": 6,
-      "fund_score": 40,
-      "fund_valuation": 0,
+      "fund_score": 33,
+      "fund_valuation": 20,
       "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 55.2,
+      "fund_growth": 1,
+      "fund_liquidity": 12,
+      "total_score": 52.2,
       "signals": [
         {
           "type": "bullish",
           "signal": "多头排列",
           "desc": "短中长期均线呈多头排列"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "300442.SZ",
-      "name": "润泽科技",
-      "price": 95.2,
-      "pct_change": 0.97,
-      "pe": 66.81,
-      "pb": 10.89,
-      "market_cap": 155589508150,
-      "turnover_rate": 3.28,
-      "tech_score": 59,
-      "tech_trend": 23,
-      "tech_momentum": 23,
-      "tech_volume": 3,
-      "fund_score": 40,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 55.2,
-      "signals": [
+        },
         {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
         }
       ],
       "recommendation": "观望"
     },
     {
-      "code": "002709.SZ",
-      "name": "天赐材料",
-      "price": 49.65,
-      "pct_change": 1.76,
-      "pe": 74.32,
-      "pb": 5.66,
-      "market_cap": 101214590590,
-      "turnover_rate": 6.14,
-      "tech_score": 59,
-      "tech_trend": 23,
-      "tech_momentum": 23,
-      "tech_volume": 3,
-      "fund_score": 36,
-      "fund_valuation": 0,
-      "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 16,
-      "total_score": 54.4,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "000792.SZ",
-      "name": "盐湖股份",
-      "price": 37.51,
-      "pct_change": -1.0,
-      "pe": 16.88,
-      "pb": 4.29,
-      "market_cap": 198486886013,
-      "turnover_rate": 1.46,
-      "tech_score": 55,
-      "tech_trend": 23,
-      "tech_momentum": 16,
-      "tech_volume": 6,
-      "fund_score": 50,
-      "fund_valuation": 10,
-      "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 54.0,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "002850.SZ",
-      "name": "科达利",
-      "price": 199.61,
-      "pct_change": 0.73,
-      "pe": 31.2,
-      "pb": 4.17,
-      "market_cap": 55042471073,
-      "turnover_rate": 3.2,
+      "code": "600872.SH",
+      "name": "中炬高新",
+      "price": 21.8,
+      "pct_change": 1.54,
+      "pe": 16.15,
+      "pb": 2.86,
+      "market_cap": 16971501170,
+      "turnover_rate": 1.87,
       "tech_score": 56,
       "tech_trend": 23,
-      "tech_momentum": 20,
+      "tech_momentum": 15,
+      "tech_volume": 13,
+      "fund_score": 37,
+      "fund_valuation": 15,
+      "fund_profit": 0,
+      "fund_growth": 10,
+      "fund_liquidity": 12,
+      "total_score": 52.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "RSI超买",
+          "desc": "RSI=75.2，处于超买区域"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "603007.SH",
+      "name": "花王股份",
+      "price": 6.87,
+      "pct_change": 0.15,
+      "pe": -26.65,
+      "pb": 21.06,
+      "market_cap": 6077518714,
+      "turnover_rate": 3.48,
+      "tech_score": 59,
+      "tech_trend": 23,
+      "tech_momentum": 23,
       "tech_volume": 3,
-      "fund_score": 45,
+      "fund_score": 22,
+      "fund_valuation": 0,
+      "fund_profit": 0,
+      "fund_growth": 10,
+      "fund_liquidity": 12,
+      "total_score": 51.6,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "601179.SH",
+      "name": "中国西电",
+      "price": 17.9,
+      "pct_change": -1.76,
+      "pe": 72.26,
+      "pb": 3.99,
+      "market_cap": 91753294101,
+      "turnover_rate": 0.63,
+      "tech_score": 57,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 29,
       "fund_valuation": 5,
       "fund_profit": 0,
       "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 53.8,
+      "fund_liquidity": 4,
+      "total_score": 51.4,
       "signals": [
         {
           "type": "bullish",
@@ -223,73 +324,12 @@
         },
         {
           "type": "bearish",
-          "signal": "KDJ超买",
-          "desc": "KDJ指标处于超买区域"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "002074.SZ",
-      "name": "国轩高科",
-      "price": 39.94,
-      "pct_change": -0.72,
-      "pe": 21.45,
-      "pb": 2.55,
-      "market_cap": 72455705332,
-      "turnover_rate": 3.3,
-      "tech_score": 52,
-      "tech_trend": 16,
-      "tech_momentum": 20,
-      "tech_volume": 6,
-      "fund_score": 55,
-      "fund_valuation": 15,
-      "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 52.6,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
-        },
-        {
-          "type": "bearish",
-          "signal": "KDJ超买",
-          "desc": "KDJ指标处于超买区域"
-        }
-      ],
-      "recommendation": "观望"
-    },
-    {
-      "code": "603659.SH",
-      "name": "璞泰来",
-      "price": 35.39,
-      "pct_change": -1.45,
-      "pe": 32.05,
-      "pb": 3.7,
-      "market_cap": 75607163300,
-      "turnover_rate": 2.37,
-      "tech_score": 53,
-      "tech_trend": 23,
-      "tech_momentum": 20,
-      "tech_volume": 0,
-      "fund_score": 50,
-      "fund_valuation": 10,
-      "fund_profit": 0,
-      "fund_growth": 20,
-      "fund_liquidity": 20,
-      "total_score": 52.4,
-      "signals": [
-        {
-          "type": "bullish",
-          "signal": "多头排列",
-          "desc": "短中长期均线呈多头排列"
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
         }
       ],
       "recommendation": "观望"
     }
   ],
-  "timestamp": "2026-04-20 15:51:48"
+  "timestamp": "2026-04-21 09:40:47"
 }
