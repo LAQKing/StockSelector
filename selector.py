@@ -142,7 +142,32 @@ def run_selection(
     if df_realtime.empty:
         print("[WARNING] No stocks left after filtering banks and large cap")
         return pd.DataFrame()
-    
+
+    # 实时筛选：涨幅[3,8] / 量比>1 / 换手率[3,12]（严格模式：量比为 0 直接淘汰）
+    print("[INFO] Applying realtime filters (pct/volume_ratio/turnover_rate)...")
+    pct = pd.to_numeric(df_realtime["pct_change"], errors="coerce").fillna(0)
+    before = len(df_realtime)
+    df_realtime = df_realtime[(pct >= 3.0) & (pct <= 8.0)]
+    print(f"   pct_change[3,8]: {before} -> {len(df_realtime)}")
+
+    if "volume_ratio" not in df_realtime.columns:
+        print("[WARN] volume_ratio column missing (Sina/AkShare fallback) - all stocks dropped under strict mode")
+        df_realtime = df_realtime.iloc[0:0]
+    else:
+        vr = pd.to_numeric(df_realtime["volume_ratio"], errors="coerce").fillna(0)
+        before2 = len(df_realtime)
+        df_realtime = df_realtime[vr > 1.0]
+        print(f"   volume_ratio>1: {before2} -> {len(df_realtime)}")
+
+    tr = pd.to_numeric(df_realtime["turnover_rate"], errors="coerce").fillna(0)
+    before3 = len(df_realtime)
+    df_realtime = df_realtime[(tr >= 3.0) & (tr <= 12.0)]
+    print(f"   turnover_rate[3,12]: {before3} -> {len(df_realtime)}")
+
+    if df_realtime.empty:
+        print("[WARNING] No stocks left after realtime filters")
+        return pd.DataFrame()
+
     # 按成交额降序排序，取成交额最大的前N只（市场关注度高）
     df_realtime["_turnover"] = pd.to_numeric(df_realtime["turnover"], errors="coerce").fillna(0)
     df_realtime = df_realtime.sort_values("_turnover", ascending=False)

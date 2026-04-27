@@ -25,12 +25,25 @@
     <div v-else-if="result && result.success" class="analysis-content">
       <!-- 操作建议 - 顶部突出显示 -->
       <div class="advice-banner" :class="getAdviceClass(result.operation_advice.action)">
-        <div class="advice-main">
-          <span class="action">{{ result.operation_advice.action }}</span>
-          <span class="reason">{{ result.operation_advice.reason }}</span>
-        </div>
-        <div class="advice-detail">
-          <span>💰 {{ result.operation_advice.flow_advice }}</span>
+        <div class="advice-grid">
+          <div class="advice-col main">
+            <span class="action">{{ result.operation_advice.action }}</span>
+            <!-- <span class="reason">{{ result.operation_advice.reason }}</span> -->
+          </div>
+          <div class="advice-col detail">
+            <div class="detail-row">
+              <span class="label">📈 技术面:</span>
+              <span class="value">{{ result.operation_advice.tech_reason }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">📊 基本面:</span>
+              <span class="value">{{ result.operation_advice.fund_reason }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">💰 资金面:</span>
+              <span class="value">{{ result.operation_advice.flow_advice }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -218,6 +231,7 @@ async function handleAnalyze() {
   result.value = null
   try {
     const res = await apiAnalyzeStock(stockCode.value)
+    console.log('[StockAnalysis] response:', res)
     if (res.success) {
       result.value = res
     } else {
@@ -374,27 +388,51 @@ function getRecommendationTag(rec) {
 .advice-reduce { background: linear-gradient(135deg, #e6a23c, #ebb563); }
 .advice-sell { background: linear-gradient(135deg, #f56c6c, #f78989); }
 
-.advice-main {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 8px;
+.advice-grid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
 }
 
-.advice-main .action {
-  font-size: 20px;
+.advice-col.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.advice-col.main .action {
+  font-size: 22px;
   font-weight: 700;
 }
 
-.advice-main .reason {
-  font-size: 14px;
-}
-
-.advice-detail {
-  display: flex;
-  gap: 20px;
+.advice-col.main .reason {
   font-size: 12px;
   opacity: 0.9;
+  margin-top: 4px;
+}
+
+.advice-col.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.detail-row .label {
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.detail-row .value {
+  opacity: 0.95;
 }
 
 .core-grid {
