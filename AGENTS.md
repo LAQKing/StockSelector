@@ -27,8 +27,10 @@ python main.py --top 30 --min-score 60 --tech-weight 0.7 --fund-weight 0.3
 | Flask port | **5001** (not 5000 - see app.py:321) |
 | Frontend path | `frontend/src/` (Vue3 + ElementPlus) |
 | Static data | `frontend/public/assets/stocks.json` |
-| Stock mapping | `_STOCK_MAPPING` in `data_fetcher.py:19` |
-| Package manager | pnpm (uses pnpm-lock.yaml) |
+| Stock mapping | `_STOCK_MAPPING` in data_fetcher.py:19 |
+| Data source | `_data_source = "sina"` in data_fetcher.py:18 |
+| Test script | `python test_akshare.py` |
+| Package manager | pnpm |
 
 ## Data Flow
 1. Frontend tries `/assets/stocks.json` (static JSON)
@@ -48,7 +50,7 @@ python main.py --top 30 --min-score 60 --tech-weight 0.7 --fund-weight 0.3
 4. **Cancellation**: Global `stop_flag` in selector.py:22
 5. **Output path**: Must save to `frontend/public/assets/stocks.json`
 6. **Auto-deploy**: app.py:72-145 runs `npm run build`, commits to main, triggers GitHub Actions (deploys to gh-pages)
-7. **CI**: Uses pnpm (workflow file), but auto-build script uses npm
+7. **CI**: Workflow uses pnpm, but auto-build script uses npm
 
 ## Code Style (Python)
 - snake_case naming

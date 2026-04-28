@@ -95,7 +95,7 @@ def run_selection(
     :param fund_weight: 基本面权重
     :param min_score: 最低综合得分阈值
     :param max_workers: 并发线程数
-    :param max_analyze: 分析的股票数量（按成交额排序）
+    :param max_analyze: 分析的股票数量（按成交量排序）
     :return: 选股结果 DataFrame
     """
     cfg = load_config()
@@ -105,6 +105,7 @@ def run_selection(
     min_score = min_score if min_score is not None else cfg.get("min_score", 0)
     max_workers = max_workers or cfg.get("max_workers", 8)
     max_analyze = max_analyze or cfg.get("max_analyze", 500)
+    print(f"[INFO] Config: max_stocks={cfg.get('max_stocks')}, max_analyze={max_analyze}")
     print("[INFO] Getting stock list...")
     stock_list = get_stock_list()
 
@@ -149,7 +150,7 @@ def run_selection(
     
     if len(df_realtime) > max_analyze:
         df_realtime = df_realtime.head(max_analyze)
-        print(f"   {len(df_realtime)} stocks remaining (top by turnover)")
+        print(f"   {len(df_realtime)} stocks remaining (top by volume)")
     else:
         print(f"   {len(df_realtime)} stocks remaining")
     
@@ -159,6 +160,9 @@ def run_selection(
 
     results = []
     print(f"[INFO] Analyzing stocks ({max_workers} threads)...")
+    print(f"[INFO] Total stocks to analyze: {len(filtered_codes)}")
+    import sys
+    sys.stdout.flush()
     start_time = time.time()
     
     global stop_flag
@@ -178,16 +182,21 @@ def run_selection(
             if code in realtime_map
         }
 
-        for future in tqdm(as_completed(futures), total=len(futures), desc="分析进度"):
-            if stop_flag:
-                print("[INFO] 用户请求停止，终止分析")
-                break
-            try:
-                result = future.result(timeout=30)
-            except Exception:
-                continue
-            if result is not None:
-                results.append(result)
+        processed = 0
+    total = len(futures)
+    for future in as_completed(futures):
+        if stop_flag:
+            print("[INFO] 用户请求停止，终止分析")
+            break
+        try:
+            result = future.result(timeout=30)
+        except Exception:
+            continue
+        processed += 1
+        if result is not None:
+            results.append(result)
+        if processed % 10 == 0:
+            print(f"进度: {processed}/{total}")
 
     elapsed = time.time() - start_time
     print(f"[INFO] Analysis completed in {elapsed:.1f} seconds")

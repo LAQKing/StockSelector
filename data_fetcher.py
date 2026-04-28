@@ -151,9 +151,11 @@ def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = Non
     from concurrent.futures import ThreadPoolExecutor, as_completed
     
     if max_stocks is None:
+        print(f"[DEBUG] max_stocks not provided, loading from config...")
         try:
             with open("config.json", "r") as f:
                 config = json.load(f)
+                print(f"[DEBUG] Loaded config: {config}")
                 max_stocks = config.get("max_stocks", 2000)
         except:
             max_stocks = 2000
