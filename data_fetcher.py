@@ -236,6 +236,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = Non
                                         "volume": volume,
                                         "turnover": turnover,
                                         "turnover_rate": item.get("f8", 0),
+                                        "volume_ratio": item.get("f10", 0),
                                         "pe": item.get("f9", 0),
                                         "pb": item.get("f23", 0),
                                         "market_cap": item.get("f20", 0),
@@ -303,6 +304,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = Non
                                             "volume": volume,
                                             "turnover": turnover,
                                             "turnover_rate": turnover_rate,
+                                            "volume_ratio": 0,
                                             "pe": pe,
                                             "pb": pb,
                                             "market_cap": market_cap,
@@ -336,6 +338,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = Non
                     "volume":       latest.get("成交量", 0),
                     "turnover":     latest.get("成交额", 0),
                     "turnover_rate": latest.get("换手率", 0),
+                    "volume_ratio": 0,
                     "pe":           0,
                     "pb":           0,
                     "market_cap":   0,
@@ -357,6 +360,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = Non
         df_em["volume"] = pd.to_numeric(df_em["volume"], errors="coerce").fillna(0)
         df_em["turnover"] = pd.to_numeric(df_em["turnover"], errors="coerce").fillna(0)
         df_em["turnover_rate"] = pd.to_numeric(df_em["turnover_rate"], errors="coerce").fillna(0)
+        df_em["volume_ratio"] = pd.to_numeric(df_em["volume_ratio"], errors="coerce").fillna(0)
         df_em["pe"] = pd.to_numeric(df_em["pe"], errors="coerce").fillna(0)
         df_em["pb"] = pd.to_numeric(df_em["pb"], errors="coerce").fillna(0)
         df_em["market_cap"] = pd.to_numeric(df_em["market_cap"], errors="coerce").fillna(0)
@@ -378,6 +382,7 @@ def get_realtime_quotes(codes: list, max_workers: int = 8, max_stocks: int = Non
         df_sina["volume"] = pd.to_numeric(df_sina["volume"], errors="coerce").fillna(0)
         df_sina["turnover"] = pd.to_numeric(df_sina["turnover"], errors="coerce").fillna(0)
         df_sina["turnover_rate"] = pd.to_numeric(df_sina["turnover_rate"], errors="coerce").fillna(0)
+        df_sina["volume_ratio"] = pd.to_numeric(df_sina["volume_ratio"], errors="coerce").fillna(0)
         df_sina["pe"] = pd.to_numeric(df_sina["pe"], errors="coerce").fillna(0)
         df_sina["pb"] = pd.to_numeric(df_sina["pb"], errors="coerce").fillna(0)
         df_sina["market_cap"] = pd.to_numeric(df_sina["market_cap"], errors="coerce").fillna(0)

@@ -160,27 +160,62 @@ def generate_operation_advice(tech_score: dict, fund_score: dict, fund_flow: dic
     else:
         flow_advice = "资金流向平稳"
     
-    # 综合建议（与 recommendation 一致）
+# 技术面判断（不含资金面）
     if total >= 70 and bullish_count > bearish_count:
+        tech_reason = "技术面、基本面多方占优"
+    elif total >= 60 and bullish_count >= bearish_count:
+        tech_reason = "多项指标向好"
+    elif total >= 50:
+        tech_reason = "处于震荡整理阶段"
+    elif total >= 40:
+        tech_reason = "指标显示下行风险"
+    else:
+        tech_reason = "多项指标显示下行趋势"
+    
+    # 基本面判断
+    if fund_score.get("total", 0) >= 70:
+        fund_reason = "基本面优良"
+    elif fund_score.get("total", 0) >= 50:
+        fund_reason = "基本面尚可"
+    elif fund_score.get("total", 0) >= 40:
+        fund_reason = "基本面一般"
+    else:
+        fund_reason = "基本面较差"
+
+    # 综合建议（含资金面判断）
+    flow_strong = main_net > 100000000 or (main_net > 0 and bullish_count > bearish_count)
+    flow_weak = main_net > 0
+    flow_negative = main_net < -100000000
+    flow_small_negative = main_net < 0
+
+    if flow_negative and total >= 50:
+        action = "观望"
+        reason = f"{tech_reason}，但主力资金大幅流出"
+    elif flow_small_negative and total < 50:
+        action = "观望"
+        reason = f"{tech_reason}，且主力资金小幅流出"
+    elif flow_strong and total >= 60:
         action = "强烈买入"
         reason = "技术面、基本面、资金面三方共振"
-    elif total >= 60 and bullish_count >= bearish_count:
+    elif flow_weak and total >= 60:
         action = "买入"
-        reason = "多项指标向好，可适当建仓"
+        reason = f"{tech_reason}，主力资金配合流入"
+    elif total >= 60:
+        action = "买入"
+        reason = f"{tech_reason}，资金面中性"
     elif total >= 50:
         action = "持有"
-        reason = "处于震荡整理阶段，建议观望"
-    elif total >= 40:
-        action = "观望"
-        reason = "指标显示下行风险，建议观望"
+        reason = f"{tech_reason}，资金面观望"
     else:
-        action = "卖出"
-        reason = "多项指标显示下行趋势，建议离场"
+        action = "观望"
+        reason = tech_reason
     
     return {
         "action": action,
         "reason": reason,
         "flow_advice": flow_advice,
+        "tech_reason": tech_reason,
+        "fund_reason": fund_reason,
     }
 
 

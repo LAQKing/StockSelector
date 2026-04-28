@@ -1,33 +1,43 @@
 {
   "data": [
     {
-      "code": "000989.SZ",
-      "name": "九芝堂",
-      "price": 9.92,
-      "pct_change": -0.1,
-      "pe": 12.87,
-      "pb": 2.2,
-      "market_cap": 8490944759,
-      "turnover_rate": 1.94,
-      "tech_score": 39,
+      "code": "603518.SH",
+      "name": "锦泓集团",
+      "price": 9.58,
+      "pct_change": 4.24,
+      "pe": 7.47,
+      "pb": 0.86,
+      "market_cap": 3308472007,
+      "turnover_rate": 3.33,
+      "tech_score": 37,
       "tech_trend": 0,
       "tech_momentum": 23,
-      "tech_volume": 6,
-      "fund_score": 47,
-      "fund_valuation": 25,
+      "tech_volume": 9,
+      "fund_score": 52,
+      "fund_valuation": 30,
       "fund_profit": 0,
       "fund_growth": 10,
       "fund_liquidity": 12,
-      "total_score": 40.6,
+      "total_score": 40.0,
       "signals": [
         {
           "type": "bullish",
           "signal": "多头排列",
           "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
         }
       ],
       "recommendation": "观望"
     }
   ],
-  "timestamp": "2026-04-28 10:40:04"
+  "timestamp": "2026-04-28 10:14:52"
 }

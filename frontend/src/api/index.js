@@ -51,8 +51,10 @@ export async function getStatus() {
 export async function analyzeStock(code) {
   try {
     const res = await axios.get(`${API_BASE}/analyze/${code}`)
+    console.log('[API] analyze response:', res.data)
     return res.data
   } catch (e) {
+    console.error('[API] analyze error:', e)
     return { success: false, error: e.message }
   }
 }
