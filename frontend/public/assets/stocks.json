@@ -1,24 +1,138 @@
 {
   "data": [
     {
-      "code": "000989.SZ",
-      "name": "九芝堂",
-      "price": 9.92,
-      "pct_change": -0.1,
-      "pe": 12.87,
-      "pb": 2.2,
-      "market_cap": 8490944759,
-      "turnover_rate": 1.94,
-      "tech_score": 39,
+      "code": "000421.SZ",
+      "name": "南京公用",
+      "price": 6.24,
+      "pct_change": 3.83,
+      "pe": 12.38,
+      "pb": 1.27,
+      "market_cap": 3584354180,
+      "turnover_rate": 3.94,
+      "tech_score": 31,
       "tech_trend": 0,
-      "tech_momentum": 23,
-      "tech_volume": 6,
-      "fund_score": 47,
-      "fund_valuation": 25,
+      "tech_momentum": 8,
+      "tech_volume": 13,
+      "fund_score": 52,
+      "fund_valuation": 30,
       "fund_profit": 0,
       "fund_growth": 10,
       "fund_liquidity": 12,
-      "total_score": 40.6,
+      "total_score": 35.2,
+      "signals": [
+        {
+          "type": "bearish",
+          "signal": "空头排列",
+          "desc": "短中长期均线呈空头排列"
+        },
+        {
+          "type": "bullish",
+          "signal": "MACD金叉",
+          "desc": "MACD柱状图由负转正"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
+        }
+      ],
+      "recommendation": "不推荐"
+    },
+    {
+      "code": "000848.SZ",
+      "name": "承德露露",
+      "price": 8.92,
+      "pct_change": 6.06,
+      "pe": 9.16,
+      "pb": 2.45,
+      "market_cap": 9098400660,
+      "turnover_rate": 5.96,
+      "tech_score": 33,
+      "tech_trend": 0,
+      "tech_momentum": 15,
+      "tech_volume": 13,
+      "fund_score": 40,
+      "fund_valuation": 25,
+      "fund_profit": 0,
+      "fund_growth": 7,
+      "fund_liquidity": 8,
+      "total_score": 34.4,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "RSI超买",
+          "desc": "RSI=78.9，处于超买区域"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
+        }
+      ],
+      "recommendation": "不推荐"
+    },
+    {
+      "code": "001212.SZ",
+      "name": "中旗新材",
+      "price": 54.06,
+      "pct_change": 4.65,
+      "pe": 720.22,
+      "pb": 5.66,
+      "market_cap": 10863877273,
+      "turnover_rate": 3.86,
+      "tech_score": 34,
+      "tech_trend": 0,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 17,
+      "fund_valuation": -5,
+      "fund_profit": 0,
+      "fund_growth": 10,
+      "fund_liquidity": 12,
+      "total_score": 30.6,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        }
+      ],
+      "recommendation": "不推荐"
+    },
+    {
+      "code": "000626.SZ",
+      "name": "远大控股",
+      "price": 9.26,
+      "pct_change": 3.46,
+      "pe": -35.11,
+      "pb": 2.19,
+      "market_cap": 4691364761,
+      "turnover_rate": 5.7,
+      "tech_score": 31,
+      "tech_trend": 0,
+      "tech_momentum": 23,
+      "tech_volume": 3,
+      "fund_score": 28,
+      "fund_valuation": 10,
+      "fund_profit": 0,
+      "fund_growth": 10,
+      "fund_liquidity": 8,
+      "total_score": 30.4,
       "signals": [
         {
           "type": "bullish",
@@ -26,8 +140,8 @@
           "desc": "短中长期均线呈多头排列"
         }
       ],
-      "recommendation": "观望"
+      "recommendation": "不推荐"
     }
   ],
-  "timestamp": "2026-04-28 10:40:04"
+  "timestamp": "2026-04-28 11:15:14"
 }
