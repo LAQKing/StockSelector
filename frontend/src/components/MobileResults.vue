@@ -53,10 +53,7 @@
           <div class="label">综合分</div>
           <div class="val" style="color: #667eea">{{ stock.total_score }}</div>
         </div>
-        <div class="stock-card-item">
-          <div class="label">建议</div>
-          <el-tag :type="getRecommendationType(stock.recommendation)" size="small">{{ stock.recommendation || '-' }}</el-tag>
-        </div>
+        
         <div v-if="stock.signals && stock.signals.length" class="stock-card-item signals-card-item">
           <div class="label">信号</div>
           <div class="signals-card">

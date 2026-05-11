@@ -20,11 +20,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="投资建议" min-width="100">
-        <template #default="{ row }">
-          <el-tag :type="getRecommendationType(row.recommendation)">{{ row.recommendation || '-' }}</el-tag>
-        </template>
-      </el-table-column>
+      
       <el-table-column label="交易信号" min-width="120">
         <template #default="{ row }">
           <div v-if="row.signals && row.signals.length" class="signals-cell">

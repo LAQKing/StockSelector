@@ -177,7 +177,7 @@ async function handleRun() {
     
     pollInterval = setInterval(async () => {
       const result = await getResult()
-      if (result.done) {
+      if (result.done || !result.success) {
         clearInterval(pollInterval)
         pollInterval = null
         loading.value = false

@@ -347,14 +347,14 @@ def analyze_stock(code: str) -> dict:
         result["price_data"] = [
             {
                 "date": row["date"].strftime("%Y-%m-%d"),
-                "open": float(row["open"]),
-                "high": float(row["high"]),
-                "low": float(row["low"]),
-                "close": float(row["close"]),
-                "volume": int(row["volume"]),
-                "ma5": float(row.get("ma5", 0)),
-                "ma10": float(row.get("ma10", 0)),
-                "ma20": float(row.get("ma20", 0)),
+                "open": _safe_float(row["open"]),
+                "high": _safe_float(row["high"]),
+                "low": _safe_float(row["low"]),
+                "close": _safe_float(row["close"]),
+                "volume": int(_safe_float(row["volume"])),
+                "ma5": _safe_float(row.get("ma5", 0)),
+                "ma10": _safe_float(row.get("ma10", 0)),
+                "ma20": _safe_float(row.get("ma20", 0)),
             }
             for _, row in recent.iterrows()
         ]
@@ -427,6 +427,8 @@ def generate_signals(hist: pd.DataFrame, tech_score: dict, fund_score: dict) -> 
     avg_volume = hist["volume"].tail(20).mean()
     if latest["volume"] > avg_volume * 2:
         signals.append({"type": "neutral", "signal": "放量", "desc": "成交量显著放大"})
+    elif latest["volume"] < avg_volume * 0.5:
+        signals.append({"type": "neutral", "signal": "缩量", "desc": "成交量显著萎缩"})
 
     return signals
 

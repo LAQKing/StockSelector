@@ -43,7 +43,7 @@ def _analyze_single(code, realtime_dict, tech_weight, fund_weight, min_score):
         hist = add_indicators(hist)
         tech = score_technical(hist)
 
-        financial = {}
+        financial = get_financial_indicator(code)
         fund = score_fundamental(realtime_dict, financial)
 
         total = tech["total"] * tech_weight + fund["total"] * fund_weight

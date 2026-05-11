@@ -186,11 +186,7 @@
         <span v-if="!result.signals?.length" class="no-signal">暂无信号</span>
       </div>
 
-      <!-- 综合建议 -->
-      <div class="signals-bar">
-        <span class="signals-label">🎯 综合建议:</span>
-        <el-tag :type="getRecommendationTag(result.recommendation)" size="large">{{ result.recommendation }}</el-tag>
-      </div>
+      
     </div>
   </div>
 </template>
