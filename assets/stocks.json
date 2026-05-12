@@ -1,0 +1,309 @@
+{
+  "data": [
+    {
+      "code": "001258.SZ",
+      "name": "立新能源",
+      "price": 9.7,
+      "pct_change": 3.19,
+      "pe": 356.98,
+      "pb": 2.97,
+      "market_cap": 9053333340,
+      "turnover_rate": 6.37,
+      "tech_score": 65,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 9,
+      "fund_score": 23,
+      "fund_valuation": 0,
+      "fund_profit": 5,
+      "fund_growth": 10,
+      "fund_liquidity": 8,
+      "total_score": 56.6,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "000537.SZ",
+      "name": "绿发电力",
+      "price": 11.19,
+      "pct_change": 3.13,
+      "pe": 64.64,
+      "pb": 1.16,
+      "market_cap": 23003483290,
+      "turnover_rate": 5.08,
+      "tech_score": 58,
+      "tech_trend": 23,
+      "tech_momentum": 19,
+      "tech_volume": 6,
+      "fund_score": 44,
+      "fund_valuation": 15,
+      "fund_profit": 5,
+      "fund_growth": 16,
+      "fund_liquidity": 8,
+      "total_score": 55.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "002860.SZ",
+      "name": "星帅尔",
+      "price": 13.99,
+      "pct_change": 3.4,
+      "pe": 22.0,
+      "pb": 2.18,
+      "market_cap": 5032378099,
+      "turnover_rate": 6.63,
+      "tech_score": 56,
+      "tech_trend": 14,
+      "tech_momentum": 23,
+      "tech_volume": 9,
+      "fund_score": 48,
+      "fund_valuation": 20,
+      "fund_profit": 10,
+      "fund_growth": 10,
+      "fund_liquidity": 8,
+      "total_score": 54.4,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "000899.SZ",
+      "name": "赣能股份",
+      "price": 14.0,
+      "pct_change": 3.24,
+      "pe": 16.9,
+      "pb": 2.05,
+      "market_cap": 13659488640,
+      "turnover_rate": 6.2,
+      "tech_score": 57,
+      "tech_trend": 20,
+      "tech_momentum": 23,
+      "tech_volume": 9,
+      "fund_score": 43,
+      "fund_valuation": 20,
+      "fund_profit": 5,
+      "fund_growth": 10,
+      "fund_liquidity": 8,
+      "total_score": 54.2,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        },
+        {
+          "type": "neutral",
+          "signal": "放量",
+          "desc": "成交量显著放大"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "002559.SZ",
+      "name": "亚威股份",
+      "price": 11.45,
+      "pct_change": 3.53,
+      "pe": 48.95,
+      "pb": 3.54,
+      "market_cap": 6294809525,
+      "turnover_rate": 8.94,
+      "tech_score": 60,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 9,
+      "fund_score": 28,
+      "fund_valuation": 5,
+      "fund_profit": 5,
+      "fund_growth": 10,
+      "fund_liquidity": 8,
+      "total_score": 53.6,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "000426.SZ",
+      "name": "兴业银锡",
+      "price": 50.95,
+      "pct_change": 3.37,
+      "pe": 16.91,
+      "pb": 8.36,
+      "market_cap": 90468640902,
+      "turnover_rate": 6.89,
+      "tech_score": 53,
+      "tech_trend": 19,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 56,
+      "fund_valuation": 10,
+      "fund_profit": 10,
+      "fund_growth": 20,
+      "fund_liquidity": 16,
+      "total_score": 53.6,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "300236.SZ",
+      "name": "上海新阳",
+      "price": 99.72,
+      "pct_change": 4.12,
+      "pe": 75.35,
+      "pb": 6.49,
+      "market_cap": 31250468297,
+      "turnover_rate": 6.19,
+      "tech_score": 57,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 39,
+      "fund_valuation": 0,
+      "fund_profit": 15,
+      "fund_growth": 16,
+      "fund_liquidity": 8,
+      "total_score": 53.4,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "300285.SZ",
+      "name": "国瓷材料",
+      "price": 41.01,
+      "pct_change": 5.94,
+      "pe": 71.85,
+      "pb": 5.67,
+      "market_cap": 40888950742,
+      "turnover_rate": 8.75,
+      "tech_score": 57,
+      "tech_trend": 23,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 36,
+      "fund_valuation": 0,
+      "fund_profit": 15,
+      "fund_growth": 13,
+      "fund_liquidity": 8,
+      "total_score": 52.8,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        },
+        {
+          "type": "bearish",
+          "signal": "触及上轨",
+          "desc": "价格触及布林带上轨，可能回调"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "000722.SZ",
+      "name": "湖南发展",
+      "price": 15.18,
+      "pct_change": 3.9,
+      "pe": 134.61,
+      "pb": 2.24,
+      "market_cap": 7045922721,
+      "turnover_rate": 11.34,
+      "tech_score": 58,
+      "tech_trend": 23,
+      "tech_momentum": 19,
+      "tech_volume": 6,
+      "fund_score": 30,
+      "fund_valuation": 5,
+      "fund_profit": 15,
+      "fund_growth": 10,
+      "fund_liquidity": 0,
+      "total_score": 52.4,
+      "signals": [
+        {
+          "type": "bullish",
+          "signal": "多头排列",
+          "desc": "短中长期均线呈多头排列"
+        }
+      ],
+      "recommendation": "观望"
+    },
+    {
+      "code": "002034.SZ",
+      "name": "旺能环境",
+      "price": 19.52,
+      "pct_change": 3.12,
+      "pe": 12.07,
+      "pb": 1.18,
+      "market_cap": 9712353437,
+      "turnover_rate": 5.66,
+      "tech_score": 51,
+      "tech_trend": 12,
+      "tech_momentum": 23,
+      "tech_volume": 6,
+      "fund_score": 53,
+      "fund_valuation": 30,
+      "fund_profit": 5,
+      "fund_growth": 10,
+      "fund_liquidity": 8,
+      "total_score": 51.4,
+      "signals": [],
+      "recommendation": "观望"
+    }
+  ],
+  "timestamp": "2026-05-12 15:47:25"
+}
